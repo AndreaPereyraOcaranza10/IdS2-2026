@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Nueva Orden de Compra')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('ordenes')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fs-3 mb-1">Nueva Orden de Compra</h1>
+                    <a th:href="@{/ordenes-compra}" class="btn btn-outline-secondary">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form id="formOrden" th:action="@{/ordenes-compra}" method="post">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Proveedor</label>
+                                    <select class="form-select" name="proveedorId" required>
+                                        <option value="">Seleccionar proveedor...</option>
+                                        <option th:each="prov : ${proveedores}" th:value="${prov.id}" th:text="${prov.razonSocial}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Usuario que genera la orden</label>
+                                    <!-- Combo temporal: cuando se implemente login, este campo se completa
+                                         automaticamente con el usuario autenticado y deja de ser un <select>. -->
+                                    <select class="form-select" name="usuarioId" required>
+                                        <option value="">Seleccionar usuario...</option>
+                                        <option th:each="usr : ${usuarios}" th:value="${usr.id}" th:text="${usr.nombre}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Lineas de la orden</h5>
+                                <button type="button" id="btnAgregarLinea" class="btn btn-sm btn-outline-primary">
+                                    <i class="ti ti-plus"></i> Agregar linea
+                                </button>
+                            </div>
+
+                            <table class="table align-middle" id="tablaLineas">
+                                <thead class="table-light">
+                                <tr>
+                                    <th style="min-width: 220px;">Producto</th>
+                                    <th style="width: 110px;">Cantidad</th>
+                                    <th style="width: 150px;">Precio Unitario</th>
+                                    <th style="width: 130px;">Subtotal</th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                                </thead>
+                                <tbody id="cuerpoLineas">
+                                <!-- Las filas se agregan aca dinamicamente por JS -->
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                                    <td id="totalOrden" class="fw-bold">$0.00</td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">Guardar como Borrador</button>
+                                <a th:href="@{/ordenes-compra}" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- "Molde" de una fila de linea. No se renderiza (esta dentro de <template>);
+     el JS lo clona cada vez que se agrega una linea nueva. -->
+<template id="filaLineaTemplate">
+    <tr class="fila-linea">
+        <td>
+            <select class="form-select select-producto" required>
+                <option value="">Seleccionar producto...</option>
+                <option th:each="prod : ${productos}"
+                        th:value="${prod.id}"
+                        th:text="${prod.codigo + ' - ' + prod.nombre}"
+                        th:data-precio="${prod.precioCompra}"></option>
+            </select>
+        </td>
+        <td><input type="number" class="form-control input-cantidad" min="1" value="1" required></td>
+        <td><input type="number" class="form-control input-precio" step="0.01" min="0.01" required></td>
+        <td class="subtotal-linea">$0.00</td>
+        <td><button type="button" class="btn btn-link link-danger p-0 btn-quitar-linea"><i class="ti ti-trash"></i></button></td>
+    </tr>
+</template>
+
+<!-- Script propio de esta vista: maneja el alta/baja de lineas, autocompletado
+     de precio segun el producto elegido, y el recalculo de subtotales/total.
+     Al enviar, arma los inputs ocultos con la nomenclatura que Spring espera
+     para bindear List<DetalleOrdenCompraFormDTO> detalles en el DTO. -->
+<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    const cuerpoLineas = document.getElementById('cuerpoLineas');
+    const template = document.getElementById('filaLineaTemplate');
+    const totalOrdenEl = document.getElementById('totalOrden');
+    const form = document.getElementById('formOrden');
+
+    function recalcularTotales() {
+        let total = 0;
+        cuerpoLineas.querySelectorAll('.fila-linea').forEach(fila => {
+            const cantidad = parseFloat(fila.querySelector('.input-cantidad').value) || 0;
+            const precio = parseFloat(fila.querySelector('.input-precio').value) || 0;
+            const subtotal = cantidad * precio;
+            fila.querySelector('.subtotal-linea').textContent = '$' + subtotal.toFixed(2);
+            total += subtotal;
+        });
+        totalOrdenEl.textContent = '$' + total.toFixed(2);
+    }
+
+    function agregarLinea() {
+        const fragment = template.content.cloneNode(true);
+        const fila = fragment.querySelector('.fila-linea');
+
+        // Al elegir un producto, autocompleta el precio unitario con precioCompra actual
+        // (el usuario todavia puede editarlo, porque el precio de ESTA compra puede variar).
+        const selectProducto = fila.querySelector('.select-producto');
+        selectProducto.addEventListener('change', function () {
+            const opcionSeleccionada = this.options[this.selectedIndex];
+            const precio = opcionSeleccionada.getAttribute('data-precio');
+            if (precio) {
+                fila.querySelector('.input-precio').value = parseFloat(precio).toFixed(2);
+                recalcularTotales();
+            }
+        });
+
+        fila.querySelector('.input-cantidad').addEventListener('input', recalcularTotales);
+        fila.querySelector('.input-precio').addEventListener('input', recalcularTotales);
+
+        fila.querySelector('.btn-quitar-linea').addEventListener('click', function () {
+            fila.remove();
+            recalcularTotales();
+        });
+
+        cuerpoLineas.appendChild(fila);
+    }
+
+    document.getElementById('btnAgregarLinea').addEventListener('click', agregarLinea);
+
+    // Arranca con una linea ya visible, para no obligar al usuario a tocar "Agregar" la primera vez.
+    agregarLinea();
+
+    // Antes de enviar, genera los <input type="hidden"> con el formato de indice que
+    // Spring necesita para bindear una lista: detalles[0].productoId, detalles[0].cantidad, etc.
+    form.addEventListener('submit', function (e) {
+        const filas = cuerpoLineas.querySelectorAll('.fila-linea');
+        if (filas.length === 0) {
+            e.preventDefault();
+            alert('Agrega al menos una linea a la orden.');
+            return;
+        }
+
+        filas.forEach((fila, index) => {
+            const productoId = fila.querySelector('.select-producto').value;
+            const cantidad = fila.querySelector('.input-cantidad').value;
+            const precio = fila.querySelector('.input-precio').value;
+
+            agregarInputOculto(form, `detalles[${index}].productoId`, productoId);
+            agregarInputOculto(form, `detalles[${index}].cantidad`, cantidad);
+            agregarInputOculto(form, `detalles[${index}].precioUnitario`, precio);
+        });
+    });
+
+    function agregarInputOculto(formulario, nombre, valor) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = nombre;
+        input.value = valor;
+        formulario.appendChild(input);
+    }
+});
+</script>
+</body>
+</html>

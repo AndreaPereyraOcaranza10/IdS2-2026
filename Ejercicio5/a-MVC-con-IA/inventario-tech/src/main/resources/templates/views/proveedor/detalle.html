@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Detalle de Proveedor')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('proveedores')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fs-3 mb-1" th:text="${proveedor.razonSocial}">Proveedor</h1>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/proveedores/{id}/editar(id=${proveedor.id})}" class="btn btn-primary">Editar</a>
+                        <a th:href="@{/proveedores}" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <p class="mb-1 text-secondary small">CUIT</p>
+                                <p class="fw-semibold" th:text="${proveedor.cuit}">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1 text-secondary small">Telefono</p>
+                                <p class="fw-semibold" th:text="${proveedor.telefono}">-</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1 text-secondary small">Estado</p>
+                                <span class="badge" th:classappend="${proveedor.activo} ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary'"
+                                      th:text="${proveedor.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1 text-secondary small">Email</p>
+                                <p class="fw-semibold" th:text="${proveedor.email}">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-secondary small">Direccion</p>
+                                <p class="fw-semibold" th:text="${proveedor.direccion}">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

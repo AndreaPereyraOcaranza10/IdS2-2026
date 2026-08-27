@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Fragmento de <head>: se inserta en cada pagina con th:replace.
+         IMPORTANTE: se llama "pageHead" (no "head") a proposito. Si el fragmento
+         se llamara "head" colisionaria con la etiqueta HTML <head> real de este
+         mismo documento, y Thymeleaf terminaria resolviendo esa etiqueta en vez
+         del th:fragment, tirando "does not match a fragment signature". -->
+    <th:block th:fragment="pageHead(titulo)">
+        <meta charset="UTF-8" />
+        <title th:text="${titulo} + ' - Inventario Tech'">Inventario Tech</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" sizes="180x180" th:href="@{/assets/images/apple-touch-icon.png}">
+        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/images/favicon-32x32.png}">
+        <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon-16x16.png}">
+        <link rel="manifest" th:href="@{/assets/site.webmanifest}">
+        <script type="module" th:src="@{/assets/js/main.js}"></script>
+        <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    </th:block>
+</head>
+<body>
+
+    <!-- Fragmento de topbar (simplificado: se le saco el dropdown de notificaciones/usuario
+         de ejemplo del template, ya que todavia no tenemos login ni datos reales para mostrar ahi) -->
+    <nav th:fragment="topbar" id="topbar" class="navbar bg-white border-bottom fixed-top topbar px-3">
+        <button id="toggleBtn" class="d-none d-lg-inline-flex btn btn-light btn-icon btn-sm">
+            <i class="ti ti-layout-sidebar-left-expand"></i>
+        </button>
+        <button id="mobileBtn" class="btn btn-light btn-icon btn-sm d-lg-none me-2">
+            <i class="ti ti-layout-sidebar-left-expand"></i>
+        </button>
+    </nav>
+
+    <!-- Fragmento de sidebar. Recibe el nombre de la seccion activa ("productos",
+         "proveedores", "ordenes") para resaltar el link correspondiente. -->
+    <aside th:fragment="sidebar(activo)" id="sidebar" class="sidebar">
+        <div class="logo-area">
+            <a th:href="@{/}" class="d-inline-flex">
+                <img th:src="@{/assets/images/logo-icon.svg}" alt="" width="24">
+                <span class="logo-text ms-2"><img th:src="@{/assets/images/logo.svg}" alt=""></span>
+            </a>
+        </div>
+        <ul class="nav flex-column">
+            <li class="px-4 py-2"><small class="nav-text">Principal</small></li>
+            <li>
+                <a class="nav-link" th:classappend="${activo == 'inicio'} ? 'active'" th:href="@{/}">
+                    <i class="ti ti-home"></i><span class="nav-text">Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" th:classappend="${activo == 'productos'} ? 'active'" th:href="@{/productos}">
+                    <i class="ti ti-box-seam"></i><span class="nav-text">Productos</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" th:classappend="${activo == 'proveedores'} ? 'active'" th:href="@{/proveedores}">
+                    <i class="ti ti-truck-delivery"></i><span class="nav-text">Proveedores</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" th:classappend="${activo == 'ordenes'} ? 'active'" th:href="@{/ordenes-compra}">
+                    <i class="ti ti-receipt"></i><span class="nav-text">Ordenes de Compra</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link" th:classappend="${activo == 'usuarios'} ? 'active'" th:href="@{/usuarios}">
+                    <i class="ti ti-users"></i><span class="nav-text">Usuarios</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Fragmento de footer -->
+    <footer th:fragment="footer" class="text-center py-2 mt-6 text-secondary">
+        <p class="mb-0">Inventario Tech &copy; 2026</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Producto')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('productos')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="fs-3 mb-1" th:text="${productoForm.id == null} ? 'Nuevo Producto' : 'Editar Producto'">Producto</h1>
+                    </div>
+                    <a th:href="@{/productos}" class="btn btn-outline-secondary">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form th:action="@{/productos}" th:object="${productoForm}" method="post">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Codigo (SKU)</label>
+                                    <input type="text" class="form-control" th:field="*{codigo}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Precio de Compra</label>
+                                    <input type="number" step="0.01" class="form-control" th:field="*{precioCompra}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('precioCompra')}" th:errors="*{precioCompra}"></small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Precio de Venta</label>
+                                    <input type="number" step="0.01" class="form-control" th:field="*{precioVenta}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('precioVenta')}" th:errors="*{precioVenta}"></small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Categoria</label>
+                                <input type="text" class="form-control" th:field="*{categoria}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Stock Minimo</label>
+                                <input type="number" class="form-control" th:field="*{stockMinimo}">
+                                <small class="text-danger" th:if="${#fields.hasErrors('stockMinimo')}" th:errors="*{stockMinimo}"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Descripcion</label>
+                                <textarea class="form-control" rows="4" th:field="*{descripcion}"></textarea>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{activo}">
+                                <label class="form-check-label">Activo</label>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a th:href="@{/productos}" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

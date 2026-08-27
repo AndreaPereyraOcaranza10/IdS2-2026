@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Usuario')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('usuarios')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fs-3 mb-1" th:text="${usuarioForm.id == null} ? 'Nuevo Usuario' : 'Editar Usuario'">Usuario</h1>
+                    <a th:href="@{/usuarios}" class="btn btn-outline-secondary">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form th:action="@{/usuarios}" th:object="${usuarioForm}" method="post">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombre de usuario</label>
+                                    <input type="text" class="form-control" th:field="*{username}"
+                                           th:readonly="${usuarioForm.id != null}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombre completo</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        Contrasenia
+                                        <!-- En edicion se aclara que dejar vacio conserva la actual -->
+                                        <small class="text-secondary" th:if="${usuarioForm.id != null}">(dejar vacio para no cambiarla)</small>
+                                    </label>
+                                    <input type="password" class="form-control" th:field="*{password}" autocomplete="new-password">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Rol</label>
+                                    <select class="form-select" th:field="*{rol}">
+                                        <option value="">Seleccionar rol...</option>
+                                        <option value="ADMIN">Administrador</option>
+                                        <option value="EMPLEADO">Empleado</option>
+                                    </select>
+                                    <small class="text-danger" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"></small>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{activo}">
+                                <label class="form-check-label">Activo</label>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
