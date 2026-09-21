@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Orden ' + ${orden.numeroOrden})}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('ordenes')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+
+        <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="fs-3 mb-1" th:text="${orden.numeroOrden}">OC-20260101-01</h1>
+                        <span class="badge"
+                              th:classappend="${orden.estado == 'BORRADOR'} ? 'bg-warning-subtle text-warning' :
+                                               (${orden.estado == 'CONFIRMADA'} ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger')"
+                              th:text="${orden.estado}">BORRADOR</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <!-- Boton Confirmar: solo visible si la orden esta en BORRADOR -->
+                        <form th:if="${orden.estado == 'BORRADOR'}" th:action="@{/ordenes-compra/{id}/confirmar(id=${orden.id})}" method="post"
+                              onsubmit="return confirm('¿Confirmar esta orden? Esta accion sumara el stock de los productos.');">
+                            <button type="submit" class="btn btn-success">Confirmar Orden</button>
+                        </form>
+                        <!-- Boton Anular: visible en BORRADOR o CONFIRMADA (no si ya esta ANULADA) -->
+                        <form th:if="${orden.estado != 'ANULADA'}" th:action="@{/ordenes-compra/{id}/anular(id=${orden.id})}" method="post"
+                              onsubmit="return confirm('¿Anular esta orden? Si estaba confirmada, se revertira el stock sumado.');">
+                            <button type="submit" class="btn btn-outline-danger">Anular Orden</button>
+                        </form>
+                        <a th:href="@{/ordenes-compra}" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <p class="mb-1 text-secondary small">Proveedor</p>
+                <p class="fw-semibold" th:text="${orden.proveedorRazonSocial}">Proveedor</p>
+            </div>
+            <div class="col-md-4">
+                <p class="mb-1 text-secondary small">Generada por</p>
+                <p class="fw-semibold" th:text="${orden.usuarioNombre}">Usuario</p>
+            </div>
+            <div class="col-md-4">
+                <p class="mb-1 text-secondary small">Fecha de creacion</p>
+                <p class="fw-semibold" th:text="${#temporals.format(orden.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</p>
+            </div>
+        </div>
+
+        <div class="row mb-3" th:if="${orden.fechaConfirmacion != null}">
+            <div class="col-md-4">
+                <p class="mb-1 text-secondary small">Fecha de confirmacion</p>
+                <p class="fw-semibold" th:text="${#temporals.format(orden.fechaConfirmacion, 'dd/MM/yyyy HH:mm')}">-</p>
+            </div>
+        </div>
+        <div class="row mb-3" th:if="${orden.fechaAnulacion != null}">
+            <div class="col-md-4">
+                <p class="mb-1 text-secondary small">Fecha de anulacion</p>
+                <p class="fw-semibold" th:text="${#temporals.format(orden.fechaAnulacion, 'dd/MM/yyyy HH:mm')}">-</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <table class="table mb-0 text-nowrap">
+                    <thead class="table-light border-light">
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="detalle : ${orden.detalles}">
+                        <td th:text="${detalle.productoCodigo}">PRD001</td>
+                        <td th:text="${detalle.productoNombre}">Producto</td>
+                        <td th:text="${detalle.cantidad}">1</td>
+                        <td th:text="${'$' + detalle.precioUnitario}">$0.00</td>
+                        <td th:text="${'$' + detalle.subtotal}">$0.00</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">Total</td>
+                        <td class="fw-bold" th:text="${'$' + orden.total}">$0.00</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
