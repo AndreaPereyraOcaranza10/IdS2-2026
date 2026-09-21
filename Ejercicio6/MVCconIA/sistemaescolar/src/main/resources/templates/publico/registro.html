@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--
+  Registro de docentes. th:object enlaza el formulario con el RegistroDocenteDTO ("registro");
+  th:field genera name/id/value de cada input; th:errors muestra los mensajes de validación del DTO
+  (Jakarta Validation) y los errores de negocio asociados a un campo por ExcepcionNegocio.aplicarEn().
+-->
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Registro de docentes')}"></head>
+<body>
+<div class="header_section">
+    <div class="container-fluid"><nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav></div>
+    <div th:replace="~{fragmentos/publico :: bannerInterno('Docentes', 'Crear cuenta')}"></div>
+</div>
+
+<div class="seccion_contenido layout_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-10">
+                <div class="tarjeta_formulario">
+                    <h3>Registro de docente</h3>
+                    <form th:action="@{/registro}" th:object="${registro}" method="post" novalidate>
+                        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                            <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" maxlength="60">
+                                <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" class="form-control" th:field="*{apellido}" maxlength="60">
+                                <span class="campo-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="sexo">Sexo</label>
+                                <select class="form-control" th:field="*{sexo}">
+                                    <option value="">Seleccione...</option>
+                                    <option th:each="s : ${T(com.colegio.sistemaescolar.enums.Sexo).values()}"
+                                            th:value="${s}" th:text="${s.etiqueta}">Femenino</option>
+                                </select>
+                                <span class="campo-error" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="fechaNacimiento">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" th:field="*{fechaNacimiento}">
+                                <span class="campo-error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo personal (será tu usuario)</label>
+                            <input type="email" class="form-control" th:field="*{email}" maxlength="150" autocomplete="username">
+                            <span class="campo-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="password">Contraseña</label>
+                                <input type="password" class="form-control" th:field="*{password}" autocomplete="new-password">
+                                <span class="campo-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="confirmarPassword">Repetir contraseña</label>
+                                <input type="password" class="form-control" th:field="*{confirmarPassword}" autocomplete="new-password">
+                                <span class="campo-error" th:if="${#fields.hasErrors('confirmarPassword')}" th:errors="*{confirmarPassword}"></span>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted mb-3">Debés ser mayor de edad. Contraseña: entre 8 y 72 caracteres, con al menos una letra y un número.</small>
+                        <button type="submit" class="btn btn-colegio">Registrarme</button>
+                        <a class="btn btn-link" th:href="@{/login}">Ya tengo cuenta</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>

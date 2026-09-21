@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Editar docente')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!--
+                  Edición de docente: datos personales + asignaciones (docente + grado + materia) en una matriz de checkboxes.
+                  th:field sobre un checkbox con th:value enlaza el Set<String> asignaciones del DocenteDTO ("gradoId-materiaId").
+                  El correo se muestra pero NO se edita (es el nombre de usuario).
+                -->
+                <h1 class="mt-4">Editar docente</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/docentes}">Docentes</a></li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/panel/docentes/{id}(id=${docente.id})}" th:object="${docente}" method="post" novalidate>
+                            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                            <div class="mb-3"><label class="form-label">Correo (usuario)</label>
+                                <input type="text" class="form-control" th:value="${docente.email}" readonly></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="apellido">Apellido</label>
+                                    <input type="text" class="form-control" th:field="*{apellido}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="sexo">Sexo</label>
+                                    <select class="form-select" th:field="*{sexo}">
+                                        <option value="">Seleccione...</option>
+                                        <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.etiqueta}">Femenino</option>
+                                    </select>
+                                    <span class="campo-error" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control" th:field="*{fechaNacimiento}">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></span></div>
+                            </div>
+                            <!-- Matriz de asignaciones: cada casilla es una combinación grado + materia (valor "gradoId-materiaId"). -->
+                            <label class="form-label fw-bold">Materias que dicta en cada grado</label>
+                            <div class="table-responsive mb-3" th:if="${!grados.isEmpty() and !materias.isEmpty()}">
+                                <table class="table table-bordered align-middle text-center mb-0">
+                                    <thead class="table-light">
+                                    <tr><th class="text-start">Grado</th><th th:each="m : ${materias}" th:text="${m.nombre}">Materia</th></tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="g : ${grados}">
+                                        <th class="text-start" th:text="${g.nombre}">1.º Grado</th>
+                                        <td th:each="m : ${materias}">
+                                            <input class="form-check-input" type="checkbox" th:field="*{asignaciones}"
+                                                   th:value="${g.id + '-' + m.id}"
+                                                   th:attr="aria-label=${g.nombre + ' - ' + m.nombre}">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-muted small mb-3" th:if="${grados.isEmpty() or materias.isEmpty()}">
+                                Primero cargá grados y materias para poder asignarlos.</div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{habilitado}">
+                                <label class="form-check-label" for="habilitado1">Cuenta habilitada (puede iniciar sesión)</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar</button>
+                            <a class="btn btn-secondary" th:href="@{/panel/docentes}">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

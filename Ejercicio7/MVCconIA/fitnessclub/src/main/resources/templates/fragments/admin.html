@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/*
+  =====================================================================================
+  FRAGMENTOS DEL LAYOUT DE ADMINISTRACIÓN (plantilla SB Admin, Bootstrap 5).
+  Cada página del panel los incluye con:  th:replace="~{fragments/admin :: nombre(params)}"
+   - th:fragment  : define un trozo reutilizable de HTML.
+   - th:replace   : reemplaza la etiqueta que lo invoca por el fragmento (evita repetir menú, cabecera, etc.).
+   - Los parámetros (titulo, activo) se pasan como argumentos: pageHead('Familias'), menuLateral('familias').
+  Los nombres NO coinciden con etiquetas HTML (p. ej. "head"): por eso el de la cabecera se llama pageHead.
+  Los comentarios de este tipo (parser-level) NO se envían al navegador.
+  =====================================================================================
+*/-->
+<head th:fragment="pageHead(titulo)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${titulo} + ' | Club Fitness'">Club Fitness</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/recursos/publico/img/favicon.ico}">
+    <!--/* @{...} genera URLs relativas al contexto de la aplicación. ORDEN DE CSS: simple-datatables ANTES que
+           styles.css para que el tema tenga prioridad en la cascada. */-->
+    <link rel="stylesheet" th:href="@{/recursos/admin/vendor/simple-datatables/style.css}">
+    <link rel="stylesheet" th:href="@{/recursos/admin/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/recursos/admin/vendor/fontawesome/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/recursos/admin/css/club.css}">
+</head>
+<body>
+<!--/* Barra superior: marca, botón del menú lateral y menú de usuario con cierre de sesión. */-->
+<nav th:fragment="barraSuperior" class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand ps-3" th:href="@{/panel}"><i class="fas fa-dumbbell me-1"></i> Club Fitness</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" type="button"><i class="fas fa-bars"></i></button>
+    <ul class="navbar-nav ms-auto me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="menuUsuario" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user fa-fw"></i> <span sec:authentication="name">usuario</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuUsuario">
+                <li><a class="dropdown-item" th:href="@{/}"><i class="fas fa-globe me-1"></i> Sitio público</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <!--/* El logout es un POST con token CSRF (th:action lo agrega solo). */-->
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="dropdown-item"><i class="fas fa-right-from-bracket me-1"></i> Cerrar sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<!--/* Menú lateral. sec:authorize (thymeleaf-extras-springsecurity6) oculta ítems según el rol;
+       la protección real está en ConfiguracionSeguridad. th:classappend marca el ítem activo. */-->
+<div th:fragment="menuLateral(activo)" id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Inicio</div>
+                <a class="nav-link" th:classappend="${activo == 'panel'} ? 'active'" th:href="@{/panel}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-gauge"></i></div> Tablero
+                </a>
+
+                <div class="sb-sidenav-menu-heading">Recepción</div>
+                <a class="nav-link" th:classappend="${activo == 'accesos'} ? 'active'" th:href="@{/accesos}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-door-open"></i></div> Entradas y salidas
+                </a>
+                <a class="nav-link" th:classappend="${activo == 'personas'} ? 'active'" th:href="@{/personas}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-id-card"></i></div> Personas
+                </a>
+
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <div class="sb-sidenav-menu-heading">Gestión</div>
+                    <a class="nav-link" th:classappend="${activo == 'familias'} ? 'active'" th:href="@{/familias}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div> Familias
+                    </a>
+                    <a class="nav-link" th:classappend="${activo == 'cuotas'} ? 'active'" th:href="@{/cuotas}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div> Cuotas
+                    </a>
+                    <a class="nav-link" th:classappend="${activo == 'pagos'} ? 'active'" th:href="@{/pagos}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div> Pagos
+                    </a>
+                    <div class="sb-sidenav-menu-heading">Sistema</div>
+                    <a class="nav-link" th:classappend="${activo == 'usuarios'} ? 'active'" th:href="@{/usuarios}">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div> Usuarios
+                    </a>
+                </th:block>
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Sesión iniciada como:</div>
+            <span sec:authentication="name">usuario</span>
+        </div>
+    </nav>
+</div>
+
+<footer th:fragment="pie" class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small text-muted">
+            <div>Club Fitness &middot; Ingeniería de Software II</div>
+            <div>Plantilla del panel: SB Admin (MIT)</div>
+        </div>
+    </div>
+</footer>
+
+<!--/* Alertas: muestran los atributos que dejan los controladores (flash tras un redirect o del modelo). */-->
+<th:block th:fragment="alertas">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${mensajeOk}">
+        <i class="fas fa-circle-check me-1"></i> <span th:text="${mensajeOk}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${mensajeError}">
+        <i class="fas fa-circle-exclamation me-1"></i> <span th:text="${mensajeError}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${mensajeAdvertencia}">
+        <i class="fas fa-triangle-exclamation me-1"></i> <span th:text="${mensajeAdvertencia}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+</th:block>
+
+<!--/* Scripts comunes: Bootstrap 5, alternar menú lateral (SB Admin) y tablas con búsqueda/paginación. */-->
+<th:block th:fragment="scripts">
+    <script th:src="@{/recursos/admin/vendor/bootstrap/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/recursos/admin/js/scripts.js}"></script>
+    <script th:src="@{/recursos/admin/vendor/simple-datatables/simple-datatables.js}"></script>
+    <script>
+        // Convierte cada <table class="tabla-datos"> en una tabla con búsqueda, orden y paginación.
+        window.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('table.tabla-datos').forEach(function (t) {
+                new simpleDatatables.DataTable(t, {
+                    perPage: 10,
+                    labels: {
+                        placeholder: 'Buscar...',
+                        perPage: 'registros por página',
+                        noRows: 'Sin registros para mostrar',
+                        noResults: 'Sin resultados',
+                        info: 'Mostrando {start} a {end} de {rows} registros'
+                    }
+                });
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

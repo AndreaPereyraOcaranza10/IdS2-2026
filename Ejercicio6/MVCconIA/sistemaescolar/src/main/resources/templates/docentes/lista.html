@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Docentes')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h1 class="mb-0">Docentes</h1>
+                    <a class="btn btn-primary" th:href="@{/panel/docentes/nuevo}"><i class="fas fa-user-plus me-1"></i>Nuevo docente</a>
+                </div>
+                <div th:replace="~{fragmentos/panel :: mensajes}"></div>
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-table me-1"></i>Listado</div>
+                    <div class="card-body">
+                        <table class="tabla-datos">
+                            <thead><tr><th>Apellido y nombre</th><th>Correo (usuario)</th><th>Asignaciones (grado - materia)</th><th>Estado</th><th class="no-imprimir">Acciones</th></tr></thead>
+                            <tbody>
+                            <tr th:each="d : ${docentes}">
+                                <td th:text="${d.nombreCompleto}">Ramírez, Ana</td>
+                                <td th:text="${d.email}">ana@correo.com</td>
+                                <td>
+                                    <span class="badge bg-primary me-1" th:each="a : ${d.asignacionesTexto}" th:text="${a}">1.º Grado - Matemática</span>
+                                    <span class="text-muted" th:if="${d.asignacionesTexto.isEmpty()}">Sin asignaciones</span>
+                                </td>
+                                <td><span class="badge bg-success" th:if="${d.habilitado}">Habilitado</span>
+                                    <span class="badge bg-secondary" th:unless="${d.habilitado}">Deshabilitado</span></td>
+                                <td class="acciones-tabla">
+                                    <a class="btn btn-sm btn-outline-primary" th:href="@{/panel/docentes/{id}/editar(id=${d.id})}"><i class="fas fa-edit"></i> Editar</a>
+                                    <!-- Habilitar / deshabilitar: cambia Usuario.habilitado (un usuario deshabilitado no puede iniciar sesión) -->
+                                    <form th:action="@{/panel/docentes/{id}/habilitar(id=${d.id})}" method="post">
+                                        <input type="hidden" name="habilitado" th:value="${!d.habilitado}">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning"
+                                                th:text="${d.habilitado} ? 'Deshabilitar' : 'Habilitar'">Deshabilitar</button>
+                                    </form>
+                                    <form th:action="@{/panel/docentes/{id}/eliminar(id=${d.id})}" method="post"
+                                          onsubmit="return confirm('¿Eliminar este docente?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

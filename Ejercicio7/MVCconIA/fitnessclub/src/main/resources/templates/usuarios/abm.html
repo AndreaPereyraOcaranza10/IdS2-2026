@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Usuarios')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('usuarios')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Usuarios</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Usuarios</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-user-shield me-1"></i> Usuarios del sistema</span>
+                        <a class="btn btn-primary btn-sm" th:href="@{/usuarios/nuevo}"><i class="fas fa-plus"></i> Nuevo usuario</a>
+                    </div>
+                    <div class="card-body">
+                        <table class="tabla-datos table table-hover align-middle">
+                            <thead><tr><th>Usuario</th><th>Rol</th><th class="text-end">Acciones</th></tr></thead>
+                            <tbody>
+                                <tr th:each="u : ${usuarios}">
+                                    <td th:text="${u.username}">usuario</td>
+                                    <td><span class="badge bg-primary" th:text="${u.rol.etiqueta}">Rol</span></td>
+                                    <td class="text-end text-nowrap">
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/usuarios/{id}/editar(id=${u.id})}" title="Editar"><i class="fas fa-pen"></i></a>
+                                        <form class="d-inline" method="post" th:action="@{/usuarios/{id}/eliminar(id=${u.id})}" onsubmit="return confirm('¿Dar de baja a este usuario?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Dar de baja"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Generar cuotas')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('cuotas')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Generar cuotas del mes</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/cuotas}">Cuotas</a></li>
+                    <li class="breadcrumb-item active">Generar cuotas del mes</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="alert alert-info">
+                    Se emitirá la cuota a <strong>todas las familias vigentes</strong> que todavía no la tengan para el período elegido.
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/cuotas/generar}" th:object="${generacion}" method="post" novalidate>
+                            <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label" for="periodo">Período (mes y año) *</label>
+                                <input class="form-control" type="month" th:field="*{periodo}" th:errorclass="is-invalid" >
+                                <div class="invalid-feedback" th:errors="*{periodo}">Error</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="importe">Importe ($) *</label>
+                                <input class="form-control" type="number" th:field="*{importe}" th:errorclass="is-invalid" step="0.01" min="0.01">
+                                <div class="invalid-feedback" th:errors="*{importe}">Error</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="fechaVencimiento">Fecha de vencimiento *</label>
+                                <input class="form-control" type="date" th:field="*{fechaVencimiento}" th:errorclass="is-invalid" >
+                                <div class="invalid-feedback" th:errors="*{fechaVencimiento}">Error</div>
+                            </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary" onclick="return confirm('¿Generar las cuotas para todas las familias?');"><i class="fas fa-layer-group"></i> Generar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/cuotas}">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

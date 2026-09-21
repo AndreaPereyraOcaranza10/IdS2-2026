@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Personas')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('personas')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Personas</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Personas</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-id-card me-1"></i> Socios y familiares vigentes</span>
+                        <a class="btn btn-primary btn-sm" sec:authorize="hasRole('ADMIN')" th:href="@{/personas/nueva}"><i class="fas fa-plus"></i> Nueva persona</a>
+                    </div>
+                    <div class="card-body">
+                        <table class="tabla-datos table table-hover align-middle">
+                            <thead><tr><th>Foto</th><th>Apellido y nombre</th><th>DNI</th><th>Familia</th><th>Parentesco</th><th class="text-end" sec:authorize="hasRole('ADMIN')">Acciones</th></tr></thead>
+                            <tbody>
+                                <tr th:each="x : ${personas}">
+                                    <!--/* La foto se pide a /personas/{id}/rostro (bytes desde la BD); sin foto se muestra una imagen por defecto. */-->
+                                    <td><img class="rostro-mini" alt="Rostro" th:src="${x.tieneRostro} ? @{/personas/{pid}/rostro(pid=${x.id})} : @{/recursos/admin/img/sin-foto.svg}"></td>
+                                    <td th:text="${x.nombreCompleto}">Nombre</td>
+                                    <td th:text="${x.dni}">DNI</td>
+                                    <td th:text="${x.grupoFamiliarNombre}">Familia</td>
+                                    <td th:text="${x.parentesco.etiqueta}">Parentesco</td>
+                                    <td class="text-end text-nowrap" sec:authorize="hasRole('ADMIN')">
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/personas/{id}/editar(id=${x.id})}" title="Editar"><i class="fas fa-pen"></i></a>
+                                        <form class="d-inline" method="post" th:action="@{/personas/{id}/eliminar(id=${x.id})}"
+                                              onsubmit="return confirm('¿Dar de baja a esta persona?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Dar de baja"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

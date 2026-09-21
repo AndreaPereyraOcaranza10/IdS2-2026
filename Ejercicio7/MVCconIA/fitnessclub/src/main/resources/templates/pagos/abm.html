@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Pagos')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('pagos')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Pagos</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Pagos</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-money-bill-wave me-1"></i> Historial de pagos</div>
+                    <div class="card-body">
+                        <table class="tabla-datos table table-hover align-middle">
+                            <thead><tr><th>Fecha</th><th>Familia</th><th>Cuota</th><th>Medio</th><th>Referencia</th><th>Monto</th><th>Cargado por</th><th class="text-end">Acciones</th></tr></thead>
+                            <tbody>
+                                <tr th:each="p : ${pagos}">
+                                    <td th:text="${#temporals.format(p.fechaPago, 'dd/MM/yyyy HH:mm')}">-</td>
+                                    <td th:text="${p.grupoFamiliarNombre}">Familia</td>
+                                    <td th:text="${p.periodoTexto}">Período</td>
+                                    <td><span class="badge bg-info text-dark" th:text="${p.medioPago.etiqueta}">Medio</span></td>
+                                    <td th:text="${p.referencia}">-</td>
+                                    <td>$ <span th:text="${#numbers.formatDecimal(p.monto, 1, 'POINT', 2, 'COMMA')}">0</span></td>
+                                    <td th:text="${p.registradoPor}">-</td>
+                                    <td class="text-end text-nowrap">
+                                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/cuotas/{id}(id=${p.cuotaId})}" title="Ver cuota"><i class="fas fa-eye"></i></a>
+                                        <form method="post" class="d-inline" th:action="@{/pagos/{id}/anular(id=${p.id})}" onsubmit="return confirm('¿Anular este pago?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Anular pago"><i class="fas fa-rotate-left"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

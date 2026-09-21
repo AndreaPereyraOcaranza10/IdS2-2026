@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Alumno')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4" th:text="${edicion} ? 'Editar alumno' : 'Nuevo alumno'">Nuevo alumno</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/alumnos}">Alumnos</a></li>
+                    <li class="breadcrumb-item active" th:text="${edicion} ? 'Editar' : 'Nuevo'">Nuevo</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="${edicion} ? @{/panel/alumnos/{id}(id=${alumno.id})} : @{/panel/alumnos}"
+                              th:object="${alumno}" method="post" novalidate>
+                            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3"><label class="form-label" for="dni">DNI</label>
+                                    <input type="text" class="form-control" th:field="*{dni}" maxlength="8" inputmode="numeric">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></span></div>
+                                <div class="col-md-4 mb-3"><label class="form-label" for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span></div>
+                                <div class="col-md-4 mb-3"><label class="form-label" for="apellido">Apellido</label>
+                                    <input type="text" class="form-control" th:field="*{apellido}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3"><label class="form-label" for="sexo">Sexo</label>
+                                    <select class="form-select" th:field="*{sexo}">
+                                        <option value="">Seleccione...</option>
+                                        <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.etiqueta}">Femenino</option>
+                                    </select>
+                                    <span class="campo-error" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></span></div>
+                                <div class="col-md-4 mb-3"><label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control" th:field="*{fechaNacimiento}">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></span></div>
+                                <div class="col-md-4 mb-3"><label class="form-label" for="domicilio">Domicilio</label>
+                                    <input type="text" class="form-control" th:field="*{domicilio}" maxlength="150">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('domicilio')}" th:errors="*{domicilio}"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="gradoId">Grado</label>
+                                    <select class="form-select" th:field="*{gradoId}">
+                                        <option value="">Seleccione...</option>
+                                        <option th:each="g : ${grados}" th:value="${g.id}" th:text="${g.nombre}">1.º Grado</option>
+                                    </select>
+                                    <span class="campo-error" th:if="${#fields.hasErrors('gradoId')}" th:errors="*{gradoId}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="aulaId">Aula</label>
+                                    <select class="form-select" th:field="*{aulaId}">
+                                        <option value="">Seleccione...</option>
+                                        <option th:each="a : ${aulas}" th:value="${a.id}"
+                                                th:text="${a.codigo} + ' (' + ${a.ocupacion} + '/' + ${a.capacidad} + ')'">A-101</option>
+                                    </select>
+                                    <span class="campo-error" th:if="${#fields.hasErrors('aulaId')}" th:errors="*{aulaId}"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="nombreTutor">Nombre del tutor</label>
+                                    <input type="text" class="form-control" th:field="*{nombreTutor}" maxlength="120">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('nombreTutor')}" th:errors="*{nombreTutor}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="telefonoTutor">Teléfono del tutor</label>
+                                    <input type="text" class="form-control" th:field="*{telefonoTutor}" maxlength="30">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('telefonoTutor')}" th:errors="*{telefonoTutor}"></span></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar</button>
+                            <a class="btn btn-secondary" th:href="@{/panel/alumnos}">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Nuevo docente')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!-- Alta de docente por el ADMIN. Usa RegistroDocenteDTO y el mismo servicio que el registro público (también envía el correo de bienvenida). -->
+                <h1 class="mt-4">Nuevo docente</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/docentes}">Docentes</a></li>
+                    <li class="breadcrumb-item active">Nuevo</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/panel/docentes}" th:object="${registro}" method="post" novalidate>
+                            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="nombre">Nombre</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="apellido">Apellido</label>
+                                    <input type="text" class="form-control" th:field="*{apellido}" maxlength="60">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="sexo">Sexo</label>
+                                    <select class="form-select" th:field="*{sexo}">
+                                        <option value="">Seleccione...</option>
+                                        <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.etiqueta}">Femenino</option>
+                                    </select>
+                                    <span class="campo-error" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control" th:field="*{fechaNacimiento}">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></span></div>
+                            </div>
+                            <div class="mb-3"><label class="form-label" for="email">Correo personal (usuario)</label>
+                                <input type="email" class="form-control" th:field="*{email}" maxlength="150">
+                                <span class="campo-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label" for="password">Contraseña inicial</label>
+                                    <input type="password" class="form-control" th:field="*{password}" autocomplete="new-password">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span></div>
+                                <div class="col-md-6 mb-3"><label class="form-label" for="confirmarPassword">Repetir contraseña</label>
+                                    <input type="password" class="form-control" th:field="*{confirmarPassword}" autocomplete="new-password">
+                                    <span class="campo-error" th:if="${#fields.hasErrors('confirmarPassword')}" th:errors="*{confirmarPassword}"></span></div>
+                            </div>
+                            <div class="form-text mb-3">Entre 8 y 72 caracteres, con al menos una letra y un número. El docente debe ser mayor de edad. Los grados y materias se asignan luego, al editar.</div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Registrar docente</button>
+                            <a class="btn btn-secondary" th:href="@{/panel/docentes}">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

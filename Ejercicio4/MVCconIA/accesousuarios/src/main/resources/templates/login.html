@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--/*
+  ============================================================================
+  VISTA: login.html  -  Formulario de ingreso  (GET/POST /login)
+  ============================================================================
+  Modelo que recibe del controlador:
+    login           (LoginDTO)  objeto del formulario (th:object).
+    registroExitoso (String)    flash opcional tras registrarse.
+    param.logout                presente en la URL tras cerrar sesión (?logout).
+  Errores: los de campo se muestran junto a cada input (th:errors) y los
+  generales (clave incorrecta, cuenta bloqueada) en el recuadro superior.
+*/-->
+<head th:replace="~{fragments/layout :: pageHead('Ingresar')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<div th:replace="~{fragments/layout :: encabezado}"></div>
+
+<main class="auth-fondo flex-grow-1 py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-lg-5 mx-auto">
+        <div class="auth-card">
+
+          <h1 class="h2 text-center mb-4">Ingresar</h1>
+
+          <!--/* Mensajes informativos. th:if muestra el bloque solo si hay valor. */-->
+          <div class="alert alert-success" role="alert" th:if="${registroExitoso}" th:text="${registroExitoso}">Registro exitoso.</div>
+          <div class="alert alert-success" role="alert" th:if="${param.logout}">Cerró sesión correctamente.</div>
+
+          <!--/*
+            th:action = URL destino (@{/login}); method=post envía los datos en el cuerpo de la petición.
+            th:object = DTO al que se enlaza el formulario; los campos se escriben como *{propiedad}.
+            novalidate = desactiva la validación del navegador para que se vean las del servidor (Bean Validation).
+          */-->
+          <form th:action="@{/login}" th:object="${login}" method="post" novalidate>
+
+            <!--/* Errores generales (bindingResult.reject): clave incorrecta, cuenta bloqueada, etc. */-->
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+              <p class="mb-0" th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error</p>
+            </div>
+
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo personal (su usuario)</label>
+              <!--/* th:field enlaza el input con la propiedad: genera id, name y value.
+                   th:errorclass agrega "is-invalid" (Bootstrap) si el campo tiene errores. */-->
+              <input type="email" class="form-control" id="correo" th:field="*{correo}"
+                     th:errorclass="is-invalid" placeholder="nombre@correo.com" autocomplete="username">
+              <!--/* th:errors imprime los mensajes de validación del campo. */-->
+              <div class="invalid-feedback" th:errors="*{correo}">Error de correo</div>
+            </div>
+
+            <div class="mb-4">
+              <label for="clave" class="form-label">Clave</label>
+              <!--/* En campos password Thymeleaf nunca vuelve a escribir el valor. */-->
+              <input type="password" class="form-control" id="clave" th:field="*{clave}"
+                     th:errorclass="is-invalid" placeholder="Su clave" autocomplete="current-password">
+              <div class="invalid-feedback" th:errors="*{clave}">Error de clave</div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Ingresar</button>
+            </div>
+          </form>
+
+          <p class="text-center mt-4 mb-0">¿Todavía no tiene usuario?
+            <a th:href="@{/registro}" class="fw-bold">Regístrese</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/layout :: pie}"></div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

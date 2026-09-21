@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- Spring Boot usa templates/error/error.html para cualquier error sin página específica (404, 403, 500...). -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Error')}"></head>
+<body>
+<div class="header_section">
+    <div class="container-fluid"><nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav></div>
+    <div th:replace="~{fragmentos/publico :: bannerInterno('Algo salió mal', 'Error')}"></div>
+</div>
+<div class="seccion_contenido layout_padding">
+    <div class="container text-center">
+        <h2 th:text="${status == 403} ? 'No tenés permiso para ver esta página' : (${status == 404} ? 'La página no existe' : 'Ocurrió un error inesperado')">Error</h2>
+        <p>Código: <span th:text="${status}">500</span></p>
+        <a class="btn btn-colegio" th:href="@{/}">Volver al inicio</a>
+    </div>
+</div>
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>

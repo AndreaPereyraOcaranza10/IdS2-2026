@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Familia')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('familias')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Datos de la familia</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/familias}">Familias</a></li>
+                    <li class="breadcrumb-item active">Datos de la familia</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <!--/* th:object enlaza el formulario con el DTO "familia"; th:field genera id/name/value de cada input;
+                               th:errorclass agrega la clase CSS cuando el campo tiene error de validación; th:errors muestra el mensaje. */-->
+                        <form th:action="@{/familias/guardar}" th:object="${familia}" method="post" novalidate>
+                            <input type="hidden" th:field="*{id}">
+                            <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="nombre">Nombre de la familia *</label>
+                                <input class="form-control" type="text" th:field="*{nombre}" th:errorclass="is-invalid" maxlength="100" autofocus>
+                                <div class="invalid-feedback" th:errors="*{nombre}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="telefono">Teléfono</label>
+                                <input class="form-control" type="text" th:field="*{telefono}" th:errorclass="is-invalid" maxlength="30">
+                                <div class="invalid-feedback" th:errors="*{telefono}">Error</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="direccion">Dirección</label>
+                                <input class="form-control" type="text" th:field="*{direccion}" th:errorclass="is-invalid" maxlength="150">
+                                <div class="invalid-feedback" th:errors="*{direccion}">Error</div>
+                            </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Guardar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/familias}">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

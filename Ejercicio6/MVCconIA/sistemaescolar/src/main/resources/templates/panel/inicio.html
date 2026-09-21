@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- Tablero: contadores del colegio (ADMIN) o resumen de asignaciones (DOCENTE). Datos del PanelDTO ("resumen"). -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Tablero')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Tablero</h1>
+                <ol class="breadcrumb mb-4"><li class="breadcrumb-item active">Resumen</li></ol>
+                <div th:replace="~{fragmentos/panel :: mensajes}"></div>
+
+                <!-- ADMIN -->
+                <div class="row" th:if="${resumen.admin}">
+                    <div class="col-xl-3 col-md-6"><div class="card bg-primary text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.alumnos}">0</div>Alumnos</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/alumnos}">Ver alumnos</a></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card bg-success text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.docentes}">0</div>Docentes</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/docentes}">Ver docentes</a></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card bg-warning text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.grados}">0</div>Grados</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/grados}">Ver grados</a></div></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card bg-danger text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.aulas}">0</div>Aulas</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/aulas}">Ver aulas</a></div></div></div>
+                    <div class="col-xl-4 col-md-6"><div class="card bg-secondary text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.materias}">0</div>Materias</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/materias}">Ver materias</a></div></div></div>
+                    <div class="col-xl-4 col-md-6"><div class="card bg-info text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.notas}">0</div>Notas registradas</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/notas}">Ver notas</a></div></div></div>
+                    <div class="col-xl-4 col-md-6"><div class="card bg-dark text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero"
+                             th:text="${resumen.promedioGeneral != null} ? ${#numbers.formatDecimal(resumen.promedioGeneral, 1, 2)} : '-'">-</div>Promedio general</div>
+                        <div class="card-footer small">Sobre todas las notas cargadas</div></div></div>
+                </div>
+
+                <!-- DOCENTE -->
+                <div class="row" th:unless="${resumen.admin}">
+                    <div class="col-xl-4 col-md-6"><div class="card bg-primary text-white mb-4">
+                        <div class="card-body"><div class="tarjeta-numero" th:text="${resumen.alumnos}">0</div>Alumnos a mi cargo</div>
+                        <div class="card-footer"><a class="small text-white stretched-link" th:href="@{/panel/alumnos}">Ver alumnos</a></div></div></div>
+                    <div class="col-xl-8 col-md-6"><div class="card mb-4"><div class="card-header"><i class="fas fa-book me-1"></i>Mis asignaciones (grado - materia)</div>
+                        <div class="card-body">
+                            <span class="badge bg-success me-1 mb-1" th:each="a : ${resumen.misAsignaciones}" th:text="${a}">1.º Grado - Matemática</span>
+                            <span class="text-muted" th:if="${resumen.misAsignaciones.isEmpty()}">Todavía no tenés asignaciones.</span></div></div></div>
+                    <div class="col-12" th:if="${resumen.misAsignaciones.isEmpty()}">
+                        <div class="alert alert-info">Administración debe asignarte grados y materias para que puedas ver alumnos y cargar notas.</div></div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

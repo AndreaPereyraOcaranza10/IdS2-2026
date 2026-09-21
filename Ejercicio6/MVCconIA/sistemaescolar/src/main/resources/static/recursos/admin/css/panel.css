@@ -1,0 +1,12 @@
+/* panel.css - Ajustes propios del panel privado sobre SB Admin (Bootstrap 5). Se carga DESPUÉS de styles.css. */
+.campo-error { display: block; color: #dc3545; font-size: .875rem; margin-top: .25rem; }
+.tabla-datos th { white-space: nowrap; }
+.acciones-tabla { white-space: nowrap; }
+.acciones-tabla form { display: inline; }
+.tarjeta-numero { font-size: 2rem; font-weight: 600; }
+.nota-aprobada { color: #198754; font-weight: 600; }
+.nota-desaprobada { color: #dc3545; font-weight: 600; }
+@media print {
+    #layoutSidenav_nav, .sb-topnav, .no-imprimir { display: none !important; }
+    #layoutSidenav_content { padding-left: 0 !important; margin-left: 0 !important; }
+}

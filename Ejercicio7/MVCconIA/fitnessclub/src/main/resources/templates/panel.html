@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Tablero')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('panel')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Tablero</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Tablero</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6" >
+                        <div class="card bg-primary text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.dentroAhora}">0</div><div>Dentro del club ahora</div></div>
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/accesos}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6" >
+                        <div class="card bg-info text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.accesosHoy}">0</div><div>Ingresos de hoy</div></div>
+                                <i class="fas fa-right-to-bracket"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/accesos}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6" >
+                        <div class="card bg-secondary text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.personasActivas}">0</div><div>Personas activas</div></div>
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/personas}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6" sec:authorize="hasRole('ADMIN')">
+                        <div class="card bg-dark text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.familiasActivas}">0</div><div>Familias activas</div></div>
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/familias}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" sec:authorize="hasRole('ADMIN')">
+                    <div class="col-xl-3 col-md-6" >
+                        <div class="card bg-warning text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.cuotasPendientes}">0</div><div>Cuotas pendientes</div></div>
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/cuotas}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6" >
+                        <div class="card bg-danger text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero" th:text="${resumen.cuotasVencidas}">0</div><div>Cuotas vencidas</div></div>
+                                <i class="fas fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/cuotas}">Ver detalle</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-md-12">
+                        <div class="card bg-success text-white mb-4 tarjeta-contador">
+                            <div class="card-body">
+                                <div><div class="numero">$ <span th:text="${#numbers.formatDecimal(resumen.recaudadoMes, 1, 'POINT', 2, 'COMMA')}">0,00</span></div><div>Recaudado en el mes</div></div>
+                                <i class="fas fa-sack-dollar"></i>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link" th:href="@{/pagos}">Ver pagos</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

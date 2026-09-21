@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Recepción')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('accesos')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Recepción: entradas y salidas</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Recepción: entradas y salidas</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-keyboard me-1"></i> Registrar movimiento</div>
+                            <div class="card-body">
+                                <!--/* Un único formulario con dos botones: th:formaction cambia la URL destino según el botón. */-->
+                                <form method="post" th:action="@{/accesos/entrada}">
+                                    <label class="form-label" for="dni">DNI de la persona</label>
+                                    <input class="form-control dni-recepcion" type="text" id="dni" name="dni" inputmode="numeric"
+                                           maxlength="9" placeholder="Ej: 30123456" autocomplete="off" autofocus required>
+                                    <div class="d-grid gap-2 d-md-flex mt-3">
+                                        <button type="submit" class="btn btn-success btn-lg flex-fill" th:formaction="@{/accesos/entrada}"><i class="fas fa-right-to-bracket"></i> Entrada</button>
+                                        <button type="submit" class="btn btn-danger btn-lg flex-fill" th:formaction="@{/accesos/salida}"><i class="fas fa-right-from-bracket"></i> Salida</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!--/* Tarjeta con la FOTO de quien acaba de pasar: recepción verifica su identidad. Llega como atributo flash. */-->
+                        <div class="card mb-4" th:if="${ultimoAcceso}">
+                            <div class="card-header"><i class="fas fa-user-check me-1"></i> Último movimiento: <strong th:text="${tipoUltimoAcceso}">ENTRADA</strong></div>
+                            <div class="card-body d-flex gap-3 align-items-center">
+                                <img class="rostro-grande" alt="Rostro" th:with="a=${ultimoAcceso}" th:src="${a.tieneRostro} ? @{/personas/{pid}/rostro(pid=${a.personaId})} : @{/recursos/admin/img/sin-foto.svg}">
+                                <div>
+                                    <h4 class="mb-1" th:text="${ultimoAcceso.personaNombre}">Nombre</h4>
+                                    <div>DNI <span th:text="${ultimoAcceso.personaDni}">0</span></div>
+                                    <div th:text="${ultimoAcceso.grupoFamiliarNombre}">Familia</div>
+                                    <div class="text-muted small mt-2">Entrada: <span th:text="${#temporals.format(ultimoAcceso.fechaHoraEntrada, 'dd/MM/yyyy HH:mm')}">-</span></div>
+                                    <div class="text-muted small" th:if="${ultimoAcceso.fechaHoraSalida != null}">Salida: <span th:text="${#temporals.format(ultimoAcceso.fechaHoraSalida, 'dd/MM/yyyy HH:mm')}">-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-person-walking-arrow-right me-1"></i> Dentro del club ahora (<span th:text="${#lists.size(dentro)}">0</span>)</div>
+                            <div class="card-body">
+                                <table class="table table-sm align-middle">
+                                    <thead><tr><th></th><th>Persona</th><th>Familia</th><th>Entró</th><th>Hace</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr th:each="a : ${dentro}">
+                                            <td><img class="rostro-mini" alt="Rostro" th:src="${a.tieneRostro} ? @{/personas/{pid}/rostro(pid=${a.personaId})} : @{/recursos/admin/img/sin-foto.svg}"></td>
+                                            <td th:text="${a.personaNombre}">Nombre</td>
+                                            <td th:text="${a.grupoFamiliarNombre}">Familia</td>
+                                            <td th:text="${#temporals.format(a.fechaHoraEntrada, 'HH:mm')}">00:00</td>
+                                            <td th:text="${a.permanencia}">0 min</td>
+                                            <td class="text-end">
+                                                <form method="post" th:action="@{/accesos/salida}" class="d-inline">
+                                                    <input type="hidden" name="dni" th:value="${a.personaDni}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Registrar salida</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(dentro)}"><td colspan="6" class="text-muted">Nadie dentro del club.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-clock-rotate-left me-1"></i> Últimos movimientos</div>
+                    <div class="card-body">
+                        <table class="tabla-datos table table-hover align-middle">
+                            <thead><tr><th>Persona</th><th>DNI</th><th>Familia</th><th>Entrada</th><th>Salida</th><th>Permanencia</th></tr></thead>
+                            <tbody>
+                                <tr th:each="a : ${movimientos}">
+                                    <td th:text="${a.personaNombre}">Nombre</td>
+                                    <td th:text="${a.personaDni}">DNI</td>
+                                    <td th:text="${a.grupoFamiliarNombre}">Familia</td>
+                                    <td th:text="${#temporals.format(a.fechaHoraEntrada, 'dd/MM/yyyy HH:mm')}">-</td>
+                                    <td><span th:if="${a.fechaHoraSalida != null}" th:text="${#temporals.format(a.fechaHoraSalida, 'dd/MM/yyyy HH:mm')}">-</span>
+                                        <span class="badge bg-success" th:if="${a.adentro}">Dentro</span></td>
+                                    <td th:text="${a.permanencia}">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

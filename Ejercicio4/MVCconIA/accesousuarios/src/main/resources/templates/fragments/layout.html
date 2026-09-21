@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--/*
+  ============================================================================
+  CAPA: VISTA (Thymeleaf) - FRAGMENTOS REUTILIZABLES
+  ============================================================================
+  Piezas comunes a todas las páginas (cabecera <head>, encabezado, pie y
+  scripts). Cada página las incorpora con th:replace, así el HTML compartido
+  se escribe una sola vez.
+
+  Sintaxis:
+    th:fragment="nombre"        -> define un fragmento.
+    th:replace="~{archivo :: nombre}" -> reemplaza la etiqueta por el fragmento.
+      "fragments/layout" es la ruta dentro de templates/, sin ".html".
+    Los fragmentos aceptan parámetros: pageHead(titulo).
+
+  Los comentarios con la forma "parser-level" (los que empiezan con las
+  marcas de barra-asterisco) son eliminados por Thymeleaf y NO llegan al
+  navegador.
+
+  Plantilla visual: "Waggy" (TemplatesJungle / ThemeWagon), HTML + CSS con
+  Bootstrap 5. Se reutiliza su hoja de estilos, paleta, tipografías y fondo.
+  Su licencia exige conservar el crédito del pie de página.
+*/-->
+
+<!--/* FRAGMENTO pageHead(titulo): contenido de <head>. El nombre NO puede ser "head" porque chocaría con la etiqueta HTML. */-->
+<head th:fragment="pageHead(titulo)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--/* th:text reemplaza el texto del <title> con el parámetro recibido. */-->
+  <title th:text="${titulo} + ' | Acceso de Usuarios'">Acceso de Usuarios</title>
+
+  <!--/* Bootstrap 5 (la misma versión y CDN que usa la plantilla Waggy). */-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+  <!--/* Tipografías de la plantilla: Chilanka (títulos y texto) y Montserrat (secundaria). */-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chilanka&family=Montserrat:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+  <!--/* @{...} es una expresión de URL: resuelve rutas relativas al contexto de la aplicación.
+       style.css = hoja de la plantilla; app.css = ajustes propios (se carga después para poder sobrescribir). */-->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+
+<!--/* FRAGMENTO encabezado: barra superior. Cambia según haya o no sesión iniciada.
+     ${session.usuarioLogueado} lee el atributo de la sesión HTTP guardado por ControladorAutenticacion.
+     th:if renderiza el bloque solo si la condición es verdadera. */-->
+<header th:fragment="encabezado" class="bg-white border-bottom">
+  <nav class="container d-flex flex-wrap align-items-center justify-content-between py-3">
+    <a class="marca" th:href="@{/}">Acceso de Usuarios</a>
+
+    <!--/* Sin sesión: enlaces a ingresar y registrarse. */-->
+    <ul class="list-unstyled d-flex align-items-center gap-3 mb-0" th:if="${session.usuarioLogueado == null}">
+      <li><a class="nav-link" th:href="@{/login}">Ingresar</a></li>
+      <li><a class="btn btn-outline-dark" th:href="@{/registro}">Registrarse</a></li>
+    </ul>
+
+    <!--/* Con sesión: saludo y botón de cierre de sesión (POST, porque modifica el estado del servidor). */-->
+    <div class="d-flex align-items-center gap-3" th:if="${session.usuarioLogueado != null}">
+      <span th:text="'Hola, ' + ${session.usuarioLogueado.nombre}">Hola, Nombre</span>
+      <form th:action="@{/logout}" method="post" class="mb-0">
+        <button type="submit" class="btn btn-outline-dark">Cerrar sesión</button>
+      </form>
+    </div>
+  </nav>
+</header>
+
+<!--/* FRAGMENTO pie: pie de página. El crédito a TemplatesJungle/ThemeWagon lo exige la licencia de la plantilla. */-->
+<footer th:fragment="pie" class="bg-white border-top py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <p class="secondary-font mb-0">Ingeniería de Software 2 - Registro e ingreso de usuarios</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p class="secondary-font mb-0">Plantilla gratuita Waggy by
+          <a href="https://templatesjungle.com/" target="_blank" class="text-decoration-underline fw-bold text-black-50">TemplatesJungle</a>
+          · Distribuida por
+          <a href="https://themewagon.com/" target="_blank" class="text-decoration-underline fw-bold text-black-50">ThemeWagon</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!--/* FRAGMENTO scripts: JavaScript de Bootstrap. th:block no genera ninguna etiqueta HTML propia. */-->
+<th:block th:fragment="scripts">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+          crossorigin="anonymous"></script>
+</th:block>
+
+</body>
+</html>

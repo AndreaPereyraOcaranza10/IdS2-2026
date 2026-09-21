@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Grados')}"></head>
+<body>
+<div class="header_section">
+    <div class="container-fluid"><nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav></div>
+    <div th:replace="~{fragmentos/publico :: bannerInterno('Oferta educativa', 'Nuestros grados')}"></div>
+</div>
+
+<div class="seccion_contenido layout_padding">
+    <div class="container">
+        <h2>Grados disponibles</h2>
+        <!-- th:each recorre la lista de GradoDTO que puso el controlador en el Model -->
+        <table class="tabla_grados" th:if="${!grados.isEmpty()}">
+            <thead><tr><th>Grado</th><th>Nivel</th></tr></thead>
+            <tbody>
+            <tr th:each="g : ${grados}">
+                <td th:text="${g.nombre}">1.º Grado</td>
+                <td th:text="${g.nivel}">1</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${grados.isEmpty()}">Todavía no hay grados cargados.</p>
+    </div>
+</div>
+
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>

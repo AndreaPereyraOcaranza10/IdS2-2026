@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Persona')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('personas')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Datos de la persona</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/personas}">Personas</a></li>
+                    <li class="breadcrumb-item active">Datos de la persona</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <!--/* enctype multipart/form-data es obligatorio para poder enviar el archivo de la foto. */-->
+                        <form th:action="@{/personas/guardar}" th:object="${persona}" method="post" enctype="multipart/form-data" novalidate>
+                            <input type="hidden" th:field="*{id}">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label" for="apellido">Apellido *</label>
+                                    <input class="form-control" type="text" th:field="*{apellido}" th:errorclass="is-invalid" maxlength="80" autofocus>
+                                    <div class="invalid-feedback" th:errors="*{apellido}">Error</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="nombre">Nombre *</label>
+                                    <input class="form-control" type="text" th:field="*{nombre}" th:errorclass="is-invalid" maxlength="80">
+                                    <div class="invalid-feedback" th:errors="*{nombre}">Error</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="dni">DNI * (sin puntos)</label>
+                                    <input class="form-control" type="text" th:field="*{dni}" th:errorclass="is-invalid" maxlength="9" inputmode="numeric">
+                                    <div class="invalid-feedback" th:errors="*{dni}">Error</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label>
+                                    <input class="form-control" type="date" th:field="*{fechaNacimiento}" th:errorclass="is-invalid">
+                                    <div class="invalid-feedback" th:errors="*{fechaNacimiento}">Error</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label" for="telefono">Teléfono</label>
+                                    <input class="form-control" type="text" th:field="*{telefono}" th:errorclass="is-invalid" maxlength="30">
+                                    <div class="invalid-feedback" th:errors="*{telefono}">Error</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input class="form-control" type="email" th:field="*{email}" th:errorclass="is-invalid" maxlength="120">
+                                    <div class="invalid-feedback" th:errors="*{email}">Error</div>
+                                </div>
+
+                                <!--/* ALTA (id == 0): se elige una familia existente O se escribe el nombre de una familia NUEVA
+                                       (se crea junto con el titular). La regla "una de las dos" la valida ServicioPersona.
+                                       EDICIÓN (id != 0): familia y parentesco no se pueden cambiar (regla del titular):
+                                       se muestran deshabilitados y se reenvían con campos ocultos. */-->
+                                <div class="col-md-3" th:if="${persona.id == 0}">
+                                    <label class="form-label" for="grupoFamiliarId">Familia existente</label>
+                                    <select class="form-select" th:field="*{grupoFamiliarId}" th:errorclass="is-invalid">
+                                        <option value="">Seleccionar...</option>
+                                        <option th:each="f : ${familias}" th:value="${f.id}" th:text="${f.nombre}">Familia</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:errors="*{grupoFamiliarId}">Error</div>
+                                </div>
+                                <div class="col-md-3" th:if="${persona.id == 0}">
+                                    <label class="form-label" for="nuevaFamiliaNombre">...o crear familia nueva</label>
+                                    <input class="form-control" type="text" th:field="*{nuevaFamiliaNombre}" th:errorclass="is-invalid"
+                                           maxlength="100" placeholder="Ej: Familia Pérez">
+                                    <div class="invalid-feedback" th:errors="*{nuevaFamiliaNombre}">Error</div>
+                                    <div class="form-text">Se crea junto con el titular.</div>
+                                </div>
+                                <div class="col-md-6" th:if="${persona.id == 0}">
+                                    <label class="form-label" for="parentesco">Parentesco *</label>
+                                    <select class="form-select" th:field="*{parentesco}" th:errorclass="is-invalid">
+                                        <option value="">Seleccionar...</option>
+                                        <option th:each="p : ${parentescos}" th:value="${p}" th:text="${p.etiqueta}">Parentesco</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:errors="*{parentesco}">Error</div>
+                                    <div class="form-text">El primer integrante de una familia debe ser el titular.</div>
+                                </div>
+
+                                <th:block th:if="${persona.id != 0}">
+                                    <input type="hidden" th:field="*{grupoFamiliarId}">
+                                    <input type="hidden" th:field="*{parentesco}">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Familia</label>
+                                        <select class="form-select" disabled>
+                                            <option th:each="f : ${familias}" th:value="${f.id}" th:text="${f.nombre}" th:selected="${f.id == persona.grupoFamiliarId}">Familia</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Parentesco</label>
+                                        <select class="form-select" disabled>
+                                            <option th:each="p : ${parentescos}" th:value="${p}" th:text="${p.etiqueta}" th:selected="${p == persona.parentesco}">Parentesco</option>
+                                        </select>
+                                    </div>
+                                </th:block>
+
+                                <!--/* Foto de rostro: en móviles "capture" abre la cámara frontal. La vista previa se arma con JS (FileReader). */-->
+                                <div class="col-12">
+                                    <label class="form-label" for="archivoRostro">
+                                        Foto de rostro <span th:if="${persona.id == 0}">*</span>
+                                        <span class="text-muted" th:if="${persona.id != 0}">(opcional: si no elige una, se conserva la actual)</span>
+                                    </label>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img th:if="${persona.tieneRostro}" class="rostro-grande" alt="Rostro actual"
+                                             th:src="@{/personas/{id}/rostro(id=${persona.id})}">
+                                        <div>
+                                            <input class="form-control" type="file" id="archivoRostro" name="archivoRostro"
+                                                   accept="image/jpeg,image/png" capture="user">
+                                            <div class="form-text">JPEG o PNG, hasta 3 MB.</div>
+                                            <img id="vistaPrevia" class="vista-previa mt-2" alt="Vista previa">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Guardar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/personas}">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+<script>
+    // Vista previa de la foto elegida antes de enviarla.
+    document.getElementById('archivoRostro').addEventListener('change', function (e) {
+        var img = document.getElementById('vistaPrevia');
+        var archivo = e.target.files[0];
+        if (!archivo) { img.style.display = 'none'; return; }
+        var lector = new FileReader();
+        lector.onload = function (ev) { img.src = ev.target.result; img.style.display = 'block'; };
+        lector.readAsDataURL(archivo);
+    });
+
+    // Alta: elegir una familia existente o escribir una nueva son excluyentes.
+    // Al escribir un nombre nuevo se preselecciona "Titular" (el primer integrante debe serlo).
+    (function () {
+        var sel = document.getElementById('grupoFamiliarId');
+        var nueva = document.getElementById('nuevaFamiliaNombre');
+        var par = document.getElementById('parentesco');
+        if (!sel || !nueva) { return; }
+        nueva.addEventListener('input', function () {
+            if (nueva.value.trim() !== '') { sel.value = ''; if (par) { par.value = 'TITULAR'; } }
+        });
+        sel.addEventListener('change', function () {
+            if (sel.value !== '') { nueva.value = ''; }
+        });
+    })();
+</script>
+</body>
+</html>

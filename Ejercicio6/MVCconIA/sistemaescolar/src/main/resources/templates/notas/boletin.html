@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Boletín')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!-- Boletín: una fila por materia con el promedio de cada período. Botón "Imprimir" usa el diálogo del navegador. -->
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h1 class="mb-0">Boletín</h1>
+                    <span class="no-imprimir">
+                        <button type="button" class="btn btn-outline-secondary" onclick="window.print()"><i class="fas fa-print me-1"></i>Imprimir</button>
+                        <a class="btn btn-secondary" th:href="@{/panel/alumnos/{id}(id=${boletin.alumnoId})}">Volver</a>
+                    </span>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong th:text="${boletin.alumnoNombre}">Pérez, Ana</strong> &mdash;
+                        <span th:text="${boletin.gradoNombre}">1.º Grado</span> /
+                        <span th:text="${boletin.aulaCodigo}">A-101</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered align-middle" th:if="${!boletin.materias.isEmpty()}">
+                            <thead><tr><th>Materia</th><th th:each="p : ${periodos}" th:text="${p.etiqueta}">Período</th><th>Promedio</th><th>Estado</th></tr></thead>
+                            <tbody>
+                            <tr th:each="m : ${boletin.materias}">
+                                <td th:text="${m.materia}">Matemática</td>
+                                <td th:each="p : ${periodos}"
+                                    th:text="${m.promedios.get(p) != null} ? ${#numbers.formatDecimal(m.promedios.get(p), 1, 2)} : '-'">-</td>
+                                <td><strong th:text="${#numbers.formatDecimal(m.promedio, 1, 2)}">7,00</strong></td>
+                                <td><span class="badge bg-success" th:if="${m.aprobada}">Aprobada</span>
+                                    <span class="badge bg-danger" th:unless="${m.aprobada}">Desaprobada</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted" th:if="${boletin.materias.isEmpty()}">El alumno todavía no tiene notas cargadas.</p>
+                        <p class="mb-0" th:if="${boletin.promedioGeneral != null}">Promedio general:
+                            <strong th:text="${#numbers.formatDecimal(boletin.promedioGeneral, 1, 2)}">7,00</strong></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Materias')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!-- Lista de materias. La tabla usa la clase "tabla-datos": tablas.js le agrega búsqueda, orden y paginación. -->
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h1 class="mb-0">Materias</h1>
+                    <a class="btn btn-primary" th:href="@{/panel/materias/nuevo}"><i class="fas fa-plus me-1"></i>Nueva materia</a>
+                </div>
+                <div th:replace="~{fragmentos/panel :: mensajes}"></div>
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-table me-1"></i>Listado</div>
+                    <div class="card-body">
+                        <table class="tabla-datos">
+                            <thead><tr><th>Nombre</th><th>Descripción</th><th class="no-imprimir">Acciones</th></tr></thead>
+                            <tbody>
+                            <tr th:each="x : ${materias}">
+                                <td th:text="${x.nombre}">Matemática</td><td th:text="${x.descripcion}">-</td>
+                                <td class="acciones-tabla">
+                                    <a class="btn btn-sm btn-outline-primary" th:href="@{/panel/materias/{id}/editar(id=${x.id})}"><i class="fas fa-edit"></i> Editar</a>
+                                    <!-- Baja lógica por POST (con token CSRF automático de th:action) y confirmación en el navegador -->
+                                    <form th:action="@{/panel/materias/{id}/eliminar(id=${x.id})}" method="post"
+                                          onsubmit="return confirm('¿Eliminar este registro?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

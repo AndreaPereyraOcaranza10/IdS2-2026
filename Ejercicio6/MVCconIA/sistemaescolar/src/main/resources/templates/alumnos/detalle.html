@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Alumno')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4" th:text="${alumno.nombreCompleto}">Alumno</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/alumnos}">Alumnos</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-user-graduate me-1"></i>Datos del alumno</div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">DNI</dt><dd class="col-sm-9" th:text="${alumno.dni}">-</dd>
+                            <dt class="col-sm-3">Sexo</dt><dd class="col-sm-9" th:text="${alumno.sexo != null} ? ${alumno.sexo.etiqueta} : '-'">-</dd>
+                            <dt class="col-sm-3">Fecha de nacimiento</dt>
+                            <dd class="col-sm-9"><span th:text="${#temporals.format(alumno.fechaNacimiento, 'dd/MM/yyyy')}">-</span>
+                                (<span th:text="${alumno.edad}">0</span> años)</dd>
+                            <dt class="col-sm-3">Grado</dt><dd class="col-sm-9" th:text="${alumno.gradoNombre}">-</dd>
+                            <dt class="col-sm-3">Aula</dt><dd class="col-sm-9" th:text="${alumno.aulaCodigo}">-</dd>
+                            <dt class="col-sm-3">Domicilio</dt><dd class="col-sm-9" th:text="${alumno.domicilio} ?: '-'">-</dd>
+                            <dt class="col-sm-3">Tutor</dt><dd class="col-sm-9" th:text="${alumno.nombreTutor} ?: '-'">-</dd>
+                            <dt class="col-sm-3">Teléfono del tutor</dt><dd class="col-sm-9" th:text="${alumno.telefonoTutor} ?: '-'">-</dd>
+                        </dl>
+                    </div>
+                </div>
+                <a class="btn btn-success" th:href="@{/panel/notas/boletin/{id}(id=${alumno.id})}"><i class="fas fa-file-alt me-1"></i>Ver boletín</a>
+                <a class="btn btn-primary" sec:authorize="hasRole('ADMIN')" th:href="@{/panel/alumnos/{id}/editar(id=${alumno.id})}"><i class="fas fa-edit me-1"></i>Editar</a>
+                <a class="btn btn-secondary" th:href="@{/panel/alumnos}">Volver</a>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

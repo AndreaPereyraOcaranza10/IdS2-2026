@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="no-js" lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página de inicio PÚBLICA. Adaptada de index.html de la plantilla Health & Fitness (Colorlib):
+       se conservó la estructura (hero, nosotros, servicios, horarios) y se tradujo/adaptó el contenido al club.
+       Las rutas de imágenes usan @{...} para funcionar sin importar el contexto de la aplicación. */-->
+<head th:replace="~{fragments/publico :: pageHead('Inicio')}"></head>
+<body>
+<div th:replace="~{fragments/publico :: precarga}"></div>
+<header th:replace="~{fragments/publico :: cabecera}"></header>
+<main>
+    <!-- Hero -->
+    <div class="slider-area position-relative">
+        <div class="slider-active">
+            <div class="single-slider slider-height d-flex align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-7 col-lg-9 col-md-8 col-sm-9">
+                            <div class="hero__caption">
+                                <span data-animation="fadeInLeft" data-delay="0.1s">Club deportivo familiar</span>
+                                <h1 data-animation="fadeInLeft" data-delay="0.4s">Un solo club para toda la familia.</h1>
+                                <a th:href="@{/login}" sec:authorize="!isAuthenticated()" class="btn hero-btn" data-animation="fadeInLeft" data-delay="0.8s">Ingreso del personal</a>
+                                <a th:href="@{/panel}" sec:authorize="isAuthenticated()" class="btn hero-btn" data-animation="fadeInLeft" data-delay="0.8s">Ir al panel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nosotros -->
+    <section class="about-area section-padding30" id="nosotros">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12">
+                    <div class="about-img"><img th:src="@{/recursos/publico/img/gallery/about.png}" alt="Nuestro club"></div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="about-caption">
+                        <div class="section-tittle section-tittle3 mb-35">
+                            <span>Sobre nuestro club</span>
+                            <h2>Registro simple y acceso seguro para cada integrante.</h2>
+                        </div>
+                        <p class="pera-top">Cada socio y su grupo familiar quedan registrados con su foto de rostro. En la entrada, recepción verifica la identidad y registra el horario de ingreso y de salida.</p>
+                        <p class="mb-65 pera-bottom">La cuota se abona una vez por familia, en efectivo, por transferencia o con Mercado Pago.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="services-area pt-100 pb-150 section-bg" id="servicios" th:attr="data-background=@{/recursos/publico/img/gallery/section_bg01.png}">
+        <section class="wantToWork-area w-padding">
+            <div class="container">
+                <div class="row align-items-end justify-content-between">
+                    <div class="col-lg-8 col-md-10 col-sm-10">
+                        <div class="section-tittle section-tittle2">
+                            <span>Lo que ofrecemos</span>
+                            <h2>Todo lo que tu familia necesita</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="single-cat text-center mb-50">
+                        <div class="cat-icon"><i class="flaticon-fitness"></i></div>
+                        <div class="cat-cap"><h5><a href="#servicios">Equipamiento</a></h5>
+                            <p>Salas de musculación y cardio con equipamiento de calidad para todas las edades.</p></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="single-cat text-center mb-50">
+                        <div class="cat-icon"><i class="flaticon-healthcare-and-medical"></i></div>
+                        <div class="cat-cap"><h5><a href="#servicios">Grupo familiar</a></h5>
+                            <p>Una única cuota por familia, con todos sus integrantes registrados y con foto.</p></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="single-cat text-center mb-50">
+                        <div class="cat-icon"><i class="flaticon-clock"></i></div>
+                        <div class="cat-cap"><h5><a href="#horarios">Control de acceso</a></h5>
+                            <p>Registro de horario de entrada y salida de cada persona en recepción.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horarios -->
+    <section class="date-tabs section-padding30" id="horarios">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="section-tittle mb-40">
+                        <span>Horarios de atención</span>
+                        <h2>Abierto todos los días</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-center mb-30"><div class="single-caption" style="background:#f7fdff;padding:40px 10px"><h3>Lunes a viernes</h3><p>7:00 - 22:00</p></div></div>
+                <div class="col-md-4 text-center mb-30"><div class="single-caption" style="background:#f7fdff;padding:40px 10px"><h3>Sábados</h3><p>8:00 - 20:00</p></div></div>
+                <div class="col-md-4 text-center mb-30"><div class="single-caption" style="background:#f7fdff;padding:40px 10px"><h3>Domingos</h3><p>9:00 - 14:00</p></div></div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/publico :: pie}"></footer>
+<div th:replace="~{fragments/publico :: subir}"></div>
+<th:block th:replace="~{fragments/publico :: scripts}"></th:block>
+</body>
+</html>

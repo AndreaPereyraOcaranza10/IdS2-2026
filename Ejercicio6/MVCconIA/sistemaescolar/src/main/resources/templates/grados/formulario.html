@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Grados')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!--
+                  Formulario de alta/edición de grados.
+                  th:object enlaza el formulario con el DTO "grado"; "edicion" (boolean del controlador) cambia título y URL.
+                -->
+                <h1 class="mt-4" th:text="${edicion} ? 'Editar grado' : 'Nuevo grado'">Nuevo grado</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/grados}">Grados</a></li>
+                    <li class="breadcrumb-item active" th:text="${edicion} ? 'Editar' : 'Nuevo'">Nuevo</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="${edicion} ? @{/panel/grados/{id}(id=${grado.id})} : @{/panel/grados}"
+                              th:object="${grado}" method="post" novalidate>
+                            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                            <div class="mb-3">
+                                <label class="form-label" for="nombre">Nombre</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" maxlength="60">
+                                <span class="campo-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="nivel">Nivel (orden numérico)</label>
+                                <input type="number" class="form-control" th:field="*{nivel}" min="1" max="12">
+                                <span class="campo-error" th:if="${#fields.hasErrors('nivel')}" th:errors="*{nivel}"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar</button>
+                            <a class="btn btn-secondary" th:href="@{/panel/grados}">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

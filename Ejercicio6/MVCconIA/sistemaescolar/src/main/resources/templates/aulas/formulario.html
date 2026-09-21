@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Aulas')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!--
+                  Formulario de alta/edición de aulas.
+                  th:object enlaza el formulario con el DTO "aula"; "edicion" (boolean del controlador) cambia título y URL.
+                -->
+                <h1 class="mt-4" th:text="${edicion} ? 'Editar aula' : 'Nueva aula'">Nueva aula</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel/aulas}">Aulas</a></li>
+                    <li class="breadcrumb-item active" th:text="${edicion} ? 'Editar' : 'Nuevo'">Nuevo</li>
+                </ol>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="${edicion} ? @{/panel/aulas/{id}(id=${aula.id})} : @{/panel/aulas}"
+                              th:object="${aula}" method="post" novalidate>
+                            <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div></div>
+                            <div class="mb-3">
+                                <label class="form-label" for="codigo">Código</label>
+                                <input type="text" class="form-control" th:field="*{codigo}" maxlength="20">
+                                <span class="campo-error" th:if="${#fields.hasErrors('codigo')}" th:errors="*{codigo}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="capacidad">Capacidad (alumnos)</label>
+                                <input type="number" class="form-control" th:field="*{capacidad}" min="1" max="100">
+                                <span class="campo-error" th:if="${#fields.hasErrors('capacidad')}" th:errors="*{capacidad}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="ubicacion">Ubicación</label>
+                                <input type="text" class="form-control" th:field="*{ubicacion}" maxlength="100">
+                                <span class="campo-error" th:if="${#fields.hasErrors('ubicacion')}" th:errors="*{ubicacion}"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Guardar</button>
+                            <a class="btn btn-secondary" th:href="@{/panel/aulas}">Cancelar</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

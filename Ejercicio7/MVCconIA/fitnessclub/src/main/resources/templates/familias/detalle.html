@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Detalle de familia')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('familias')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Detalle de familia</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/familias}">Familias</a></li>
+                    <li class="breadcrumb-item active">Detalle de familia</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-users me-1"></i> <span th:text="${familia.nombre}">Familia</span></div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Titular:</strong> <span th:text="${familia.titularNombre} ?: '(sin titular)'">-</span></li>
+                                <li class="list-group-item"><strong>Dirección:</strong> <span th:text="${familia.direccion}">-</span></li>
+                                <li class="list-group-item"><strong>Teléfono:</strong> <span th:text="${familia.telefono}">-</span></li>
+                                <li class="list-group-item"><strong>Integrantes:</strong> <span th:text="${familia.cantidadIntegrantes}">0</span></li>
+                            </ul>
+                            <div class="card-footer">
+                                <a class="btn btn-sm btn-outline-primary" th:href="@{/familias/{id}/editar(id=${familia.id})}"><i class="fas fa-pen"></i> Editar</a>
+                                <a class="btn btn-sm btn-outline-secondary" th:href="@{/familias}">Volver</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-id-card me-1"></i> Integrantes</span>
+                                <a class="btn btn-primary btn-sm" th:href="@{/personas/nueva(familiaId=${familia.id})}"><i class="fas fa-plus"></i> Agregar integrante</a>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm align-middle">
+                                    <thead><tr><th></th><th>Nombre</th><th>DNI</th><th>Parentesco</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr th:each="x : ${integrantes}">
+                                            <td><img class="rostro-mini" alt="Rostro" th:src="${x.tieneRostro} ? @{/personas/{pid}/rostro(pid=${x.id})} : @{/recursos/admin/img/sin-foto.svg}"></td>
+                                            <td th:text="${x.nombreCompleto}">Nombre</td>
+                                            <td th:text="${x.dni}">DNI</td>
+                                            <td th:text="${x.parentesco.etiqueta}">Parentesco</td>
+                                            <td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/personas/{id}/editar(id=${x.id})}"><i class="fas fa-pen"></i></a></td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(integrantes)}"><td colspan="5" class="text-muted">Sin integrantes.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-file-invoice-dollar me-1"></i> Cuotas</div>
+                            <div class="card-body">
+                                <table class="table table-sm align-middle">
+                                    <thead><tr><th>Período</th><th>Importe</th><th>Saldo</th><th>Estado</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr th:each="c : ${cuotas}">
+                                            <td th:text="${c.periodoTexto}">Período</td>
+                                            <td>$ <span th:text="${#numbers.formatDecimal(c.importe, 1, 'POINT', 2, 'COMMA')}">0</span></td>
+                                            <td>$ <span th:text="${#numbers.formatDecimal(c.saldo, 1, 'POINT', 2, 'COMMA')}">0</span></td>
+                                            <td><span class="badge" th:text="${c.vencida} ? 'Vencida' : ${c.estado.etiqueta}"
+                                                      th:classappend="${c.estado.name() == 'PAGADA'} ? 'bg-success' : (${c.estado.name() == 'ANULADA'} ? 'bg-secondary' : (${c.vencida} ? 'bg-danger' : 'bg-warning text-dark'))">Estado</span></td>
+                                            <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/cuotas/{id}(id=${c.id})}"><i class="fas fa-eye"></i></a></td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(cuotas)}"><td colspan="5" class="text-muted">Sin cuotas emitidas.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

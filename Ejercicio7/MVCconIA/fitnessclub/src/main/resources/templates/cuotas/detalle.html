@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Detalle de cuota')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('cuotas')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Detalle de cuota</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/cuotas}">Cuotas</a></li>
+                    <li class="breadcrumb-item active">Detalle de cuota</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-file-invoice-dollar me-1"></i> <span th:text="${cuota.periodoTexto}">Período</span></div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Familia:</strong> <a th:href="@{/familias/{id}(id=${cuota.grupoFamiliarId})}" th:text="${cuota.grupoFamiliarNombre}">Familia</a></li>
+                                <li class="list-group-item"><strong>Vencimiento:</strong> <span th:text="${#temporals.format(cuota.fechaVencimiento, 'dd/MM/yyyy')}">-</span></li>
+                                <li class="list-group-item"><strong>Importe:</strong> $ <span th:text="${#numbers.formatDecimal(cuota.importe, 1, 'POINT', 2, 'COMMA')}">0</span></li>
+                                <li class="list-group-item"><strong>Pagado:</strong> $ <span th:text="${#numbers.formatDecimal(cuota.montoPagado, 1, 'POINT', 2, 'COMMA')}">0</span></li>
+                                <li class="list-group-item"><strong>Saldo:</strong> $ <span th:text="${#numbers.formatDecimal(cuota.saldo, 1, 'POINT', 2, 'COMMA')}">0</span></li>
+                                <li class="list-group-item"><strong>Estado:</strong>
+                                    <span class="badge" th:text="${cuota.vencida} ? 'Vencida' : ${cuota.estado.etiqueta}"
+                                              th:classappend="${cuota.estado.name() == 'PAGADA'} ? 'bg-success' : (${cuota.estado.name() == 'ANULADA'} ? 'bg-secondary' : (${cuota.vencida} ? 'bg-danger' : 'bg-warning text-dark'))">Estado</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <!--/* Formulario de pago: solo si la cuota está PENDIENTE. El monto sugerido es el saldo. */-->
+                        <div class="card mb-4" th:if="${cuota.estado.name() == 'PENDIENTE'}">
+                            <div class="card-header"><i class="fas fa-cash-register me-1"></i> Registrar pago</div>
+                            <div class="card-body">
+                                <form th:action="@{/pagos/registrar}" th:object="${pago}" method="post" novalidate>
+                                    <input type="hidden" th:field="*{cuotaId}">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="medioPago">Medio de pago *</label>
+                                            <select class="form-select" th:field="*{medioPago}" id="medioPago">
+                                                <option th:each="m : ${mediosPago}" th:value="${m}" th:text="${m.etiqueta}">Medio</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="monto">Monto ($) *</label>
+                                            <input class="form-control" type="number" step="0.01" min="0.01" th:field="*{monto}">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" for="referencia">Comprobante / operación <span id="marcaReferencia"></span></label>
+                                            <input class="form-control" type="text" maxlength="80" th:field="*{referencia}" placeholder="Nº de operación">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-success mt-3"><i class="fas fa-check"></i> Registrar pago</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-money-bill-wave me-1"></i> Pagos de la cuota</div>
+                            <div class="card-body">
+                                <table class="table table-sm align-middle">
+                                    <thead><tr><th>Fecha</th><th>Medio</th><th>Referencia</th><th>Monto</th><th>Cargado por</th><th></th></tr></thead>
+                                    <tbody>
+                                        <tr th:each="p : ${cuota.pagos}">
+                                            <td th:text="${#temporals.format(p.fechaPago, 'dd/MM/yyyy HH:mm')}">-</td>
+                                            <td th:text="${p.medioPago.etiqueta}">Medio</td>
+                                            <td th:text="${p.referencia}">-</td>
+                                            <td>$ <span th:text="${#numbers.formatDecimal(p.monto, 1, 'POINT', 2, 'COMMA')}">0</span></td>
+                                            <td th:text="${p.registradoPor}">-</td>
+                                            <td class="text-end">
+                                                <form method="post" class="d-inline" th:action="@{/pagos/{id}/anular(id=${p.id}, volverACuota=${cuota.id})}"
+                                                      onsubmit="return confirm('¿Anular este pago?');">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Anular pago"><i class="fas fa-rotate-left"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(cuota.pagos)}"><td colspan="6" class="text-muted">Todavía no hay pagos registrados.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+<script>
+    // Transferencia y Mercado Pago exigen comprobante: se marca el campo como obligatorio.
+    (function () {
+        var medio = document.getElementById('medioPago');
+        if (!medio) { return; }
+        var marca = document.getElementById('marcaReferencia');
+        function actualizar() { marca.textContent = medio.value === 'EFECTIVO' ? '(opcional)' : '*'; }
+        medio.addEventListener('change', actualizar);
+        actualizar();
+    })();
+</script>
+</body>
+</html>

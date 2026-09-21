@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--/* Página de error genérica (Spring Boot la usa para /error: 404, 500, etc.). Autónoma: no depende de la sesión.
+       No muestra detalles internos (stack traces) por seguridad. */-->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Error | Club Fitness</title>
+    <link rel="stylesheet" th:href="@{/recursos/admin/css/styles.css}">
+</head>
+<body class="bg-light">
+<div class="container text-center mt-5 pt-5">
+    <div class="display-1 text-danger" th:text="${status} ?: 'Error'">Error</div>
+    <p class="lead" th:switch="${status}">
+        <span th:case="404">La página que busca no existe.</span>
+        <span th:case="403">No tiene permisos para acceder a este recurso.</span>
+        <span th:case="*">Ocurrió un error inesperado.</span>
+    </p>
+    <a class="btn btn-primary" th:href="@{/}">Volver al inicio</a>
+</div>
+</body>
+</html>

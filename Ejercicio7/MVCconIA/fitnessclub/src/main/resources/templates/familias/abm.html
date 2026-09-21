@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Familias')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('familias')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Familias</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    
+                    <li class="breadcrumb-item active">Familias</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-users me-1"></i> Grupos familiares vigentes</span>
+                        <a class="btn btn-primary btn-sm" th:href="@{/familias/nueva}"><i class="fas fa-plus"></i> Nueva familia</a>
+                    </div>
+                    <div class="card-body">
+                        <table class="tabla-datos table table-hover align-middle">
+                            <thead>
+                                <tr><th>Familia</th><th>Titular</th><th>Integrantes</th><th>Teléfono</th><th class="text-end">Acciones</th></tr>
+                            </thead>
+                            <tbody>
+                                <!--/* th:each recorre la lista de DTOs que el controlador puso en el modelo ("familias"). */-->
+                                <tr th:each="f : ${familias}">
+                                    <td th:text="${f.nombre}">Familia</td>
+                                    <td th:text="${f.titularNombre} ?: '(sin titular)'">Titular</td>
+                                    <td th:text="${f.cantidadIntegrantes}">0</td>
+                                    <td th:text="${f.telefono}">-</td>
+                                    <td class="text-end text-nowrap">
+                                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/familias/{id}(id=${f.id})}" title="Ver detalle"><i class="fas fa-eye"></i></a>
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/familias/{id}/editar(id=${f.id})}" title="Editar"><i class="fas fa-pen"></i></a>
+                                        <form class="d-inline" method="post" th:action="@{/familias/{id}/eliminar(id=${f.id})}"
+                                              onsubmit="return confirm('¿Dar de baja la familia y todos sus integrantes?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Dar de baja"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

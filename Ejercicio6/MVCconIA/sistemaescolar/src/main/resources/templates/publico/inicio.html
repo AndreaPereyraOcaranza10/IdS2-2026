@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!-- Página de inicio pública. Estructura tomada de index.html de la plantilla Oinia (header, features, services, about). -->
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Inicio')}"></head>
+<body>
+
+<div class="header_section">
+    <div class="container-fluid">
+        <nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav>
+    </div>
+    <!-- banner principal -->
+    <div class="banner_section layout_padding">
+        <div class="container">
+            <p class="banner_text" th:text="'Bienvenidos a ' + ${colegio.nombre}">Bienvenidos</p>
+            <h1 class="banner_taital">Alumnos, docentes<br>y notas en un solo lugar</h1>
+            <div class="read_bt"><a th:href="@{/login}">Ingresar</a></div>
+        </div>
+    </div>
+</div>
+
+<!-- características (bloques .box_main de Oinia) -->
+<div class="language_section layout_padding">
+    <div class="container">
+        <h1 class="language_taital">Gestión escolar</h1>
+        <h1 class="language_taital_1">Todo el colegio, organizado</h1>
+        <div class="language_section_2 layout_padding">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="box_main">
+                        <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-1.png}" alt=""></div>
+                        <h6 class="heavy_text">Alumnos con<br>grado y aula</h6>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="box_main active">
+                        <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-2.png}" alt=""></div>
+                        <h6 class="heavy_text">Docentes con<br>usuario y contraseña</h6>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="box_main">
+                        <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-3.png}" alt=""></div>
+                        <h6 class="heavy_text">Notas por<br>materia y período</h6>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="box_main">
+                        <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-4.png}" alt=""></div>
+                        <h6 class="heavy_text">Boletín con<br>promedios</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- llamado a la acción para docentes (sección .services_section de Oinia) -->
+<div class="services_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class="language_taital">Docentes</h1>
+                <h1 class="language_taital_1">Registrate y cargá tus notas</h1>
+                <p class="services_text">Creá tu cuenta con tu correo personal. Vas a recibir un correo de bienvenida y,
+                    una vez que administración te asigne tus grados y materias, podrás calificar a tus alumnos.</p>
+                <div class="appoinment_bt"><a th:href="@{/registro}">Registrarme</a></div>
+            </div>
+            <div class="col-md-6">
+                <div class="image_1"><img th:src="@{/recursos/publico/images/img-1.png}" alt=""></div>
+                <div class="image_2"><img th:src="@{/recursos/publico/images/img-2.png}" alt=""></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="about_section layout_padding">
+    <div class="container">
+        <h1 class="about_taital">Nuestro colegio</h1>
+        <div class="about_section_2">
+            <div class="row">
+                <div class="col-md-6"><div class="image_6"></div></div>
+                <div class="col-md-6">
+                    <h1 class="about_taital_1" th:text="${colegio.nombre}">Colegio</h1>
+                    <p class="about_text">Acompañamos el aprendizaje de cada alumno con un equipo docente comprometido.
+                        Consultá los <a th:href="@{/grados}">grados</a> que ofrecemos o escribinos desde la sección de
+                        <a th:href="@{/contacto}">contacto</a>.</p>
+                    <div class="appoinment_bt"><a th:href="@{/grados}">Ver grados</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>

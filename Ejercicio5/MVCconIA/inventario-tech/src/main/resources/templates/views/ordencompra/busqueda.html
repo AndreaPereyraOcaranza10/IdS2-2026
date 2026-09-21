@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Ordenes de Compra')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('ordenes')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+
+        <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="fs-3 mb-1">Ordenes de Compra</h1>
+                        <p class="mb-0">Compras a proveedores mayoristas</p>
+                    </div>
+                    <a th:href="@{/ordenes-compra/nueva}" class="btn btn-primary">Nueva Orden</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <table class="table mb-0 text-nowrap table-hover">
+                    <thead class="table-light border-light">
+                    <tr>
+                        <th>N° Orden</th>
+                        <th>Proveedor</th>
+                        <th>Fecha Creacion</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="orden : ${ordenes}" class="align-middle">
+                        <td>
+                            <a th:href="@{/ordenes-compra/{id}(id=${orden.id})}" th:text="${orden.numeroOrden}">OC-20260101-01</a>
+                        </td>
+                        <td th:text="${orden.proveedorRazonSocial}">Proveedor</td>
+                        <td th:text="${#temporals.format(orden.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${orden.estado == 'BORRADOR'} ? 'bg-warning-subtle text-warning' :
+                                                   (${orden.estado == 'CONFIRMADA'} ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger')"
+                                  th:text="${orden.estado}">BORRADOR</span>
+                        </td>
+                        <td th:text="${'$' + orden.total}">$0</td>
+                        <td>
+                            <a th:href="@{/ordenes-compra/{id}(id=${orden.id})}" class="btn btn-sm btn-outline-secondary">Ver</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(ordenes)}">
+                        <td colspan="6" class="text-center text-secondary py-4">No hay ordenes de compra registradas.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

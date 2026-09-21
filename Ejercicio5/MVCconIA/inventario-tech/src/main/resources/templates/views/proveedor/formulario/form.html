@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/layout :: pageHead('Proveedor')}"></head>
+<body>
+<div id="overlay" class="overlay"></div>
+<nav th:replace="~{components/layout :: topbar}"></nav>
+<aside th:replace="~{components/layout :: sidebar('proveedores')}"></aside>
+
+<main id="content" class="content py-10">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="fs-3 mb-1" th:text="${proveedorForm.id == null} ? 'Nuevo Proveedor' : 'Editar Proveedor'">Proveedor</h1>
+                    <a th:href="@{/proveedores}" class="btn btn-outline-secondary">Volver al listado</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form th:action="@{/proveedores}" th:object="${proveedorForm}" method="post">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label">Razon Social</label>
+                                    <input type="text" class="form-control" th:field="*{razonSocial}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('razonSocial')}" th:errors="*{razonSocial}"></small>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">CUIT</label>
+                                    <!-- Si es edicion, el CUIT se muestra deshabilitado: no se permite modificarlo -->
+                                    <input type="text" class="form-control" th:field="*{cuit}"
+                                           th:readonly="${proveedorForm.id != null}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('cuit')}" th:errors="*{cuit}"></small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Telefono</label>
+                                    <input type="text" class="form-control" th:field="*{telefono}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" th:field="*{email}">
+                                    <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Direccion</label>
+                                <input type="text" class="form-control" th:field="*{direccion}">
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{activo}">
+                                <label class="form-check-label">Activo</label>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a th:href="@{/proveedores}" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <footer th:replace="~{components/layout :: footer}"></footer>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

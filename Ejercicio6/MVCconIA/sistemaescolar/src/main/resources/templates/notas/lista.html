@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Notas')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <!-- Lista de notas. El servicio ya filtra: el DOCENTE solo recibe las de sus alumnos y sus materias. -->
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                    <h1 class="mb-0">Notas</h1>
+                    <a class="btn btn-primary" th:href="@{/panel/notas/nueva}"><i class="fas fa-plus me-1"></i>Nueva nota</a>
+                </div>
+                <div th:replace="~{fragmentos/panel :: mensajes}"></div>
+                <div class="card mb-4">
+                    <div class="card-header"><i class="fas fa-table me-1"></i>Listado</div>
+                    <div class="card-body">
+                        <table class="tabla-datos">
+                            <thead><tr><th>Fecha</th><th>Alumno</th><th>Grado</th><th>Materia</th><th>Período</th><th>Nota</th><th>Cargada por</th><th class="no-imprimir">Acciones</th></tr></thead>
+                            <tbody>
+                            <tr th:each="n : ${notas}">
+                                <td th:text="${#temporals.format(n.fecha, 'dd/MM/yyyy')}">01/01/2026</td>
+                                <td th:text="${n.alumnoNombre}">Pérez, Ana</td>
+                                <td th:text="${n.gradoNombre}">1.º Grado</td>
+                                <td th:text="${n.materiaNombre}">Matemática</td>
+                                <td th:text="${n.periodoEtiqueta}">1.º trimestre</td>
+                                <td th:text="${#numbers.formatDecimal(n.valor, 1, 2)}"
+                                    th:classappend="${n.aprobada} ? 'nota-aprobada' : 'nota-desaprobada'">7,00</td>
+                                <td th:text="${n.cargadaPor}">-</td>
+                                <td class="acciones-tabla">
+                                    <a class="btn btn-sm btn-outline-primary" th:href="@{/panel/notas/{id}/editar(id=${n.id})}"><i class="fas fa-edit"></i> Editar</a>
+                                    <form th:action="@{/panel/notas/{id}/eliminar(id=${n.id})}" method="post"
+                                          onsubmit="return confirm('¿Eliminar esta nota?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

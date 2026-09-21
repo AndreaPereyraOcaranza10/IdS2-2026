@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Contacto')}"></head>
+<body>
+<div class="header_section">
+    <div class="container-fluid"><nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav></div>
+    <div th:replace="~{fragmentos/publico :: bannerInterno('Estamos para ayudarte', 'Contacto')}"></div>
+</div>
+
+<div class="seccion_contenido layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Datos del colegio</h2>
+                <div class="contacto_item"><img th:src="@{/recursos/publico/images/call-icon.png}" alt="">
+                    <div><h5>Teléfono</h5><span th:text="${colegio.telefono}">-</span></div></div>
+                <div class="contacto_item"><img th:src="@{/recursos/publico/images/mail-icon.png}" alt="">
+                    <div><h5>Correo</h5><span th:text="${colegio.emailContacto}">-</span></div></div>
+                <div class="contacto_item"><div><h5>Dirección</h5><span th:text="${colegio.direccion}">-</span></div></div>
+            </div>
+            <div class="col-md-6">
+                <h2>¿Sos docente?</h2>
+                <p>Si todavía no tenés cuenta, podés registrarte con tu correo personal. Si ya te registraste y no podés
+                    ingresar, es posible que administración deba habilitar tu cuenta.</p>
+                <a class="btn btn-colegio" th:href="@{/registro}">Registrarme</a>
+                <a class="btn btn-outline-secondary ml-2" th:href="@{/login}">Ingresar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>

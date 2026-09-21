@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--/*
+  ============================================================================
+  VISTA: registro.html  -  Formulario de registro  (GET/POST /registro)
+  ============================================================================
+  Modelo que recibe del controlador:
+    registro (RegistroDTO)  objeto del formulario (th:object). Puede llegar con
+                            el correo precargado cuando se redirige desde un
+                            ingreso con un correo no registrado.
+    aviso    (String)       flash opcional que explica esa redirección.
+  Campos pedidos por el enunciado: Nombre, Apellido, Documento, Fecha de
+  Nacimiento y Correo Personal (que será el usuario), más la clave y su
+  confirmación.
+*/-->
+<head th:replace="~{fragments/layout :: pageHead('Registro')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<div th:replace="~{fragments/layout :: encabezado}"></div>
+
+<main class="auth-fondo flex-grow-1 py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="auth-card">
+
+          <h1 class="h2 text-center mb-4">Registro de usuario</h1>
+
+          <div class="alert alert-warning" role="alert" th:if="${aviso}" th:text="${aviso}">Aviso</div>
+
+          <form th:action="@{/registro}" th:object="${registro}" method="post" novalidate>
+
+            <!--/* Errores generales del alta (los de campo salen junto a cada input). */-->
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}">
+              <p class="mb-0" th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error</p>
+            </div>
+
+            <!--/* Sistema de grillas de Bootstrap: .row + .col-md-6 = dos columnas en pantallas medianas o más grandes. */-->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}"
+                       th:errorclass="is-invalid" autocomplete="given-name">
+                <div class="invalid-feedback" th:errors="*{nombre}">Error de nombre</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" th:field="*{apellido}"
+                       th:errorclass="is-invalid" autocomplete="family-name">
+                <div class="invalid-feedback" th:errors="*{apellido}">Error de apellido</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="documento" class="form-label">Documento</label>
+                <input type="text" class="form-control" id="documento" th:field="*{documento}"
+                       th:errorclass="is-invalid" placeholder="Sin puntos ni espacios">
+                <div class="invalid-feedback" th:errors="*{documento}">Error de documento</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                <!--/* type=date muestra un selector de fecha; envía "yyyy-MM-dd", que RegistroDTO convierte a LocalDate. */-->
+                <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}"
+                       th:errorclass="is-invalid" autocomplete="bday">
+                <div class="invalid-feedback" th:errors="*{fechaNacimiento}">Error de fecha</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo personal (será su usuario)</label>
+              <input type="email" class="form-control" id="correo" th:field="*{correo}"
+                     th:errorclass="is-invalid" placeholder="nombre@correo.com" autocomplete="email">
+              <div class="invalid-feedback" th:errors="*{correo}">Error de correo</div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="clave" class="form-label">Clave</label>
+                <input type="password" class="form-control" id="clave" th:field="*{clave}"
+                       th:errorclass="is-invalid" placeholder="Entre 6 y 32 caracteres" autocomplete="new-password">
+                <div class="invalid-feedback" th:errors="*{clave}">Error de clave</div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="confirmarClave" class="form-label">Repetir clave</label>
+                <input type="password" class="form-control" id="confirmarClave" th:field="*{confirmarClave}"
+                       th:errorclass="is-invalid" autocomplete="new-password">
+                <div class="invalid-feedback" th:errors="*{confirmarClave}">Error de confirmación</div>
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Registrarme</button>
+            </div>
+          </form>
+
+          <p class="text-center mt-4 mb-0">¿Ya tiene usuario?
+            <a th:href="@{/login}" class="fw-bold">Ingrese</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/layout :: pie}"></div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

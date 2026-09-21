@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/panel :: encabezadoHtml('Mi perfil')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragmentos/panel :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragmentos/panel :: menuLateral}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Mi perfil</h1>
+                <ol class="breadcrumb mb-4"><li class="breadcrumb-item active">Cuenta</li></ol>
+                <div th:replace="~{fragmentos/panel :: mensajes}"></div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-user me-1"></i>Datos de la cuenta</div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Nombre</dt><dd class="col-sm-8" th:text="${perfil.nombreCompleto}">-</dd>
+                                    <dt class="col-sm-4">Usuario (correo)</dt><dd class="col-sm-8" th:text="${perfil.email}">-</dd>
+                                    <dt class="col-sm-4">Rol</dt><dd class="col-sm-8" th:text="${perfil.rolEtiqueta}">-</dd>
+                                    <dt class="col-sm-4">Último cambio de contraseña</dt>
+                                    <dd class="col-sm-8" th:text="${perfil.ultimoCambioPassword != null} ? ${#temporals.format(perfil.ultimoCambioPassword, 'dd/MM/yyyy HH:mm')} : '-'">-</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-key me-1"></i>Cambiar contraseña</div>
+                            <div class="card-body">
+                                <form th:action="@{/panel/perfil/password}" th:object="${cambio}" method="post" novalidate>
+                                    <div class="mb-3"><label class="form-label" for="passwordActual">Contraseña actual</label>
+                                        <input type="password" class="form-control" th:field="*{passwordActual}" autocomplete="current-password">
+                                        <span class="campo-error" th:if="${#fields.hasErrors('passwordActual')}" th:errors="*{passwordActual}"></span></div>
+                                    <div class="mb-3"><label class="form-label" for="passwordNueva">Nueva contraseña</label>
+                                        <input type="password" class="form-control" th:field="*{passwordNueva}" autocomplete="new-password">
+                                        <span class="campo-error" th:if="${#fields.hasErrors('passwordNueva')}" th:errors="*{passwordNueva}"></span></div>
+                                    <div class="mb-3"><label class="form-label" for="confirmarPassword">Repetir nueva contraseña</label>
+                                        <input type="password" class="form-control" th:field="*{confirmarPassword}" autocomplete="new-password">
+                                        <span class="campo-error" th:if="${#fields.hasErrors('confirmarPassword')}" th:errors="*{confirmarPassword}"></span></div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Cambiar contraseña</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{fragmentos/panel :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragmentos/panel :: scripts}"></th:block>
+</body>
+</html>

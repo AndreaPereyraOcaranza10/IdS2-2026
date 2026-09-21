@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/*
+  =====================================================================================
+  FRAGMENTOS DEL LAYOUT PÚBLICO (plantilla "Health & Fitness" de Colorlib, Bootstrap 4).
+  Se usa SOLO en las páginas públicas (inicio y login). El panel interno usa fragments/admin.html
+  (Bootstrap 5). Nunca se mezclan ambos layouts en una misma página.
+  Nota de licencia: el pie conserva el crédito a Colorlib (la plantilla lo exige).
+  =====================================================================================
+*/-->
+<head th:fragment="pageHead(titulo)">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title th:text="${titulo} + ' | Club Fitness'">Club Fitness</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/recursos/publico/img/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/slicknav.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/gijgo.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/animate.min.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/animated-headline.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/magnific-popup.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/fontawesome-all.min.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/themify-icons.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/slick.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/nice-select.css}">
+    <link rel="stylesheet" th:href="@{/recursos/publico/css/style.css}">
+</head>
+<body>
+<!--/* Precarga: main.js la oculta al terminar de cargar la página. */-->
+<div th:fragment="precarga" id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="preloader-circle"></div>
+            <div class="preloader-img pere-text">
+                <img th:src="@{/recursos/publico/img/logo/loder.png}" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/* Cabecera con el menú. sec:authorize decide si mostrar "Ingresar" (anónimo) o "Ir al panel" (autenticado). */-->
+<header th:fragment="cabecera">
+    <div class="header-area header-transparent">
+        <div class="main-header header-sticky">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-xl-2 col-lg-2 col-md-1">
+                        <div class="logo"><a th:href="@{/}"><img th:src="@{/recursos/publico/img/logo/logo.png}" alt="Club Fitness"></a></div>
+                    </div>
+                    <div class="col-xl-10 col-lg-10 col-md-10">
+                        <div class="menu-main d-flex align-items-center justify-content-end">
+                            <div class="main-menu f-right d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a th:href="@{/}">Inicio</a></li>
+                                        <li><a th:href="@{/#nosotros}">Nosotros</a></li>
+                                        <li><a th:href="@{/#servicios}">Servicios</a></li>
+                                        <li><a th:href="@{/#horarios}">Horarios</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="header-right-btn f-right d-none d-lg-block ml-30">
+                                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn header-btn">Ingresar</a>
+                                <a sec:authorize="isAuthenticated()" th:href="@{/panel}" class="btn header-btn">Ir al panel</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12"><div class="mobile_menu d-block d-lg-none"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<footer th:fragment="pie">
+    <div class="footer-area section-bg" th:attr="data-background=@{/recursos/publico/img/gallery/section_bg03.png}">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-logo"><a th:href="@{/}"><img th:src="@{/recursos/publico/img/logo/logo2_footer.png}" alt=""></a></div>
+                            <div class="footer-tittle"><div class="footer-pera">
+                                <p class="info1">Club deportivo familiar: un solo lugar para toda la familia, con control de acceso y cuota única por grupo familiar.</p>
+                            </div></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>Horarios</h4>
+                                <ul>
+                                    <li><a href="#">Lunes a viernes 7:00 - 22:00</a></li>
+                                    <li><a href="#">Sábados 8:00 - 20:00</a></li>
+                                    <li><a href="#">Domingos 9:00 - 14:00</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>Acceso</h4>
+                                <ul>
+                                    <li><a th:href="@{/login}">Personal del club</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row d-flex align-items-center">
+                    <div class="col-lg-12">
+                        <div class="footer-copy-right text-center">
+                            <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> Club Fitness | Plantilla creada por <a href="https://colorlib.com" target="_blank" rel="noopener">Colorlib</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div th:fragment="subir" id="back-top"><a title="Ir arriba" href="#"><i class="fas fa-level-up-alt"></i></a></div>
+
+<!--/* Scripts de la plantilla (jQuery 1.12 + Bootstrap 4 + plugins), en el mismo orden que el original. */-->
+<th:block th:fragment="scripts">
+    <script th:src="@{/recursos/publico/js/vendor/modernizr-3.5.0.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/vendor/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/popper.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/bootstrap.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.slicknav.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/owl.carousel.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/slick.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/wow.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/animated.headline.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.magnific-popup.js}"></script>
+    <script th:src="@{/recursos/publico/js/gijgo.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.nice-select.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.sticky.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.counterup.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/waypoints.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.countdown.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/hover-direction-snake.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/contact.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.form.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.validate.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/mail-script.js}"></script>
+    <script th:src="@{/recursos/publico/js/jquery.ajaxchimp.min.js}"></script>
+    <script th:src="@{/recursos/publico/js/plugins.js}"></script>
+    <script th:src="@{/recursos/publico/js/main.js}"></script>
+</th:block>
+</body>
+</html>

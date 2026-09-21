@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--/* Página del panel: usa los fragmentos de fragments/admin.html (cabecera, barra, menú, pie, scripts). */-->
+<head th:replace="~{fragments/admin :: pageHead('Cuota')}"></head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{fragments/admin :: barraSuperior}"></nav>
+<div id="layoutSidenav">
+    <div th:replace="~{fragments/admin :: menuLateral('cuotas')}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Datos de la cuota</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item"><a th:href="@{/panel}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/cuotas}">Cuotas</a></li>
+                    <li class="breadcrumb-item active">Datos de la cuota</li>
+                </ol>
+                <div th:replace="~{fragments/admin :: alertas}"></div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/cuotas/guardar}" th:object="${cuota}" method="post" novalidate>
+                            <input type="hidden" th:field="*{id}">
+                            <div class="row g-3">
+                                <!--/* ALTA: se elige familia y período. EDICIÓN: solo importe y vencimiento (familia y período se muestran fijos). */-->
+                                <div class="col-md-6" th:if="${cuota.id == 0}">
+                                    <label class="form-label" for="grupoFamiliarId">Familia *</label>
+                                    <select class="form-select" th:field="*{grupoFamiliarId}" th:errorclass="is-invalid">
+                                        <option value="">Seleccionar...</option>
+                                        <option th:each="f : ${familias}" th:value="${f.id}" th:text="${f.nombre}">Familia</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:errors="*{grupoFamiliarId}">Error</div>
+                                </div>
+                                <div class="col-md-6" th:if="${cuota.id == 0}">
+                                    <label class="form-label" for="periodo">Período (mes y año) *</label>
+                                    <input class="form-control" type="month" th:field="*{periodo}" th:errorclass="is-invalid">
+                                    <div class="invalid-feedback" th:errors="*{periodo}">Error</div>
+                                </div>
+                                <th:block th:if="${cuota.id != 0}">
+                                    <input type="hidden" th:field="*{grupoFamiliarId}">
+                                    <input type="hidden" th:field="*{periodo}">
+                                    <div class="col-md-6"><label class="form-label">Familia</label><input class="form-control" disabled th:value="${cuota.grupoFamiliarNombre}"></div>
+                                    <div class="col-md-6"><label class="form-label">Período</label><input class="form-control" disabled th:value="${cuota.periodoTexto}"></div>
+                                </th:block>
+                            <div class="col-md-6">
+                                <label class="form-label" for="importe">Importe ($) *</label>
+                                <input class="form-control" type="number" th:field="*{importe}" th:errorclass="is-invalid" step="0.01" min="0.01">
+                                <div class="invalid-feedback" th:errors="*{importe}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="fechaVencimiento">Fecha de vencimiento *</label>
+                                <input class="form-control" type="date" th:field="*{fechaVencimiento}" th:errorclass="is-invalid" >
+                                <div class="invalid-feedback" th:errors="*{fechaVencimiento}">Error</div>
+                            </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk"></i> Guardar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/cuotas}">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        <footer th:replace="~{fragments/admin :: pie}"></footer>
+    </div>
+</div>
+<th:block th:replace="~{fragments/admin :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/publico :: encabezadoHtml('Servicios')}"></head>
+<body>
+<div class="header_section">
+    <div class="container-fluid"><nav th:replace="~{fragmentos/publico :: barraNavegacion}"></nav></div>
+    <div th:replace="~{fragmentos/publico :: bannerInterno('Qué ofrece el sistema', 'Servicios')}"></div>
+</div>
+
+<div class="language_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="box_main">
+                    <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-1.png}" alt=""></div>
+                    <h6 class="heavy_text">Registro de alumnos</h6>
+                    <p>Cada alumno queda asociado a su grado y a su aula, con control de cupo.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="box_main active">
+                    <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-2.png}" alt=""></div>
+                    <h6 class="heavy_text">Docentes y accesos</h6>
+                    <p>Ingreso con usuario (correo personal) y contraseña, con cambio de contraseña y aviso por correo.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="box_main">
+                    <div class="icon_1"><img th:src="@{/recursos/publico/images/icon-4.png}" alt=""></div>
+                    <h6 class="heavy_text">Notas y boletín</h6>
+                    <p>Notas por materia y período. Cada docente califica solo a sus alumnos y sus materias.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragmentos/publico :: pie}"></div>
+<th:block th:replace="~{fragmentos/publico :: scripts}"></th:block>
+</body>
+</html>
