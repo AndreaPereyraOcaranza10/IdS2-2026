@@ -1,0 +1,141 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Personas</title>
+</head>
+<body>
+
+  <h2>Ingreso de datos</h2>
+  el arroba representa que se trata de una url
+  <form th:action="@{/procesar}" th:object="${persona}" method="POST">
+    <label>Nombre:</label>
+    <input type="text" name="nombre" th:field="*{nombre}" required> <br>
+    <label>Apellido:</label>
+    <input type="text" name="apellido" th:field="*{apellido}" required><br>
+    <label>Edad:</label>
+    <input type="text" name="edad" th:field="*{edad}" required><br>
+
+    <button type="submit">Enviar</button>
+
+  </form>
+
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingreso de Datos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background-color: #ffffff;
+      padding: 35px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1f2937;
+      margin-bottom: 24px;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #111827;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    button {
+      width: 100%;
+      background-color: #4f46e5;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #4338ca;
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>Ingreso de Datos</h2>
+  <form th:action="@{/procesar}" th:object="${persona}" method="post">
+    <div class="form-group">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej. Alex" required />
+    </div>
+
+    <div class="form-group">
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" th:field="*{apellido}" placeholder="Ej. Chen" required />
+    </div>
+
+    <div class="form-group">
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" th:field="*{edad}" min="0" required />
+    </div>
+
+    <button type="submit">Enviar</button>
+  </form>
+</div>
+</body>
+</html>

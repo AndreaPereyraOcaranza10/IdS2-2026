@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 40px 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1f2937;
+            font-size: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .user-highlight {
+            color: #4f46e5;
+            text-transform: capitalize;
+        }
+
+        p {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-logout {
+            display: inline-block;
+            background-color: #ef4444;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-logout:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>¡Bienvenido/a, <span class="user-highlight" th:text="${session.usuarioLogueado}">Usuario</span>! 👋</h2>
+    <p>Has iniciado sesión correctamente. La información de tu cuenta permanece activa a través del objeto <code>HttpSession</code>.</p>
+
+    <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+</div>
+
+</body>
+</html>

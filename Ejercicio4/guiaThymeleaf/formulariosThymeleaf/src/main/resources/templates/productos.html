@@ -1,0 +1,177 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Precio</th>
+        </tr>
+        </thead>
+        <tbody>
+            (esto es un comentarioo)el each implica que cada fila es una iteracion
+            <tr th:each="producto : ${listaProductos}">
+                <td th:text="${producto.id}"></td>
+                <td th:text="${producto.nombre}"></td>
+                <td th:text="${producto.marca}"></td>
+                <td th:text="'$ ' + ${producto.precio}"></td>
+            </tr>
+        </tbody>
+
+    </table>
+</body>
+</html>
+-->
+<!--plantila gemini-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Alinea Header, Contenido y Footer de arriba a abajo */
+        }
+
+        /* Contenedor que centra la tarjeta y empuja el footer hacia abajo */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 20px 40px;
+        }
+
+        .tabla-contenedor {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 850px;
+            padding: 35px 30px;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .tabla-moderna {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .tabla-moderna thead {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+
+        .tabla-moderna th {
+            padding: 14px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tabla-moderna td {
+            padding: 14px 18px;
+            font-size: 15px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .tabla-moderna tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tabla-moderna tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Columna de precio */
+        .precio {
+            font-weight: 600;
+            color: #059669;
+            text-align: right;
+        }
+
+        .tabla-moderna th:last-child {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+
+<div th:replace="~{fragments::header}"></div>
+
+
+<div class="main-wrapper">
+    <div class="tabla-contenedor">
+        <h1>Lista de Productos</h1>
+
+        <div th:insert="~{fragments::alertaInformativa}"></div>
+
+        <div class="table-responsive">
+            <table class="tabla-moderna">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Marca</th>
+                    <th>Precio</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="producto : ${listaProductos}">
+                    <td th:text="${producto.id}" data-label="ID"></td>
+                    <td th:text="${producto.nombre}" data-label="Nombre"></td>
+                    <td th:text="${producto.marca}" data-label="Marca"></td>
+                    <td th:text="'$ ' + ${producto.precio}" data-label="Precio" class="precio"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragments::footer}"></div>
+
+</body>
+</html>

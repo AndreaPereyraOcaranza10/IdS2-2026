@@ -1,0 +1,165 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado</title>
+</head>
+<body>
+
+    <h2>Datos procesados</h2>
+
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+        </tr>
+        <tr>
+            <td th:text="${persona.nombre}"></td>
+            <td th:text="${persona.apellido}"></td>
+            <td th:text="${persona.edad}"></td>
+        </tr>
+    </table>
+
+    (esto estaba comentado)
+    <p th:if="${edad>=18}">
+        Puede acceder a contenido para mayores de 18
+    </p>
+
+    <p th:unless="${edad>=18}">
+        No puede acceder a contenido para mayores de 18
+    </p>
+
+    <p th:text="${tipoEdad}"></p>
+
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 35px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1f2937;
+            margin-bottom: 22px;
+            font-size: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 22px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            background-color: #f9fafb;
+            color: #374151;
+            font-size: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-info {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3730a3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #e5e7eb;
+            color: #1f2937;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Datos Procesados</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${persona.nombre}">Nombre</td>
+            <td th:text="${persona.apellido}">Apellido</td>
+            <td th:text="${persona.edad}">0</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Mensaje condicional de edad calculado en el backend -->
+    <p class="badge-info" th:text="${tipoEdad}">Resultado edad</p>
+
+    <div>
+        <a class="btn-back" th:href="@{/}">Volver al formulario</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Administrador de Productos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Contenedor flexible que centra el contenido y empuja el footer hacia abajo */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        /* Tarjeta que coincide con el estilo de productos.html */
+        .card-bienvenida {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 620px;
+            padding: 40px 35px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1f2937;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        /* Contenedor para acotar el ancho de la alerta dentro de la tarjeta */
+        .alerta-container {
+            margin: 22px 0;
+            text-align: left;
+        }
+
+        .btn-listado {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 12px 26px;
+            background-color: #4f46e5;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-listado:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-listado:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+//replace reemplaza, insert agrega al codigo (include esta deprecado)
+<div th:replace="~{fragments :: header}"></div>
+
+
+<main class="main-wrapper">
+    <div class="card-bienvenida">
+        <h2>Bienvenido al sistema</h2>
+        <p>Esta aplicación permite visualizar un listado dinámico de productos utilizando Thymeleaf.</p>
+        <p>Además, reutiliza un encabezado y un pie de página mediante fragmentos.</p>
+
+        <div class="alerta-container">
+            <div th:insert="~{fragments :: alertaInformativa}"></div>
+        </div>
+
+        <a th:href="@{/productos}" class="btn-listado">
+            Ir al listado de productos →
+        </a>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footer}"></div>
+
+</body>
+</html>
